@@ -1,0 +1,20 @@
+#\u914D\u7F6E\u7AEF\u53E3
+server:
+  port: 7002
+#\u6CE8\u518C\u5230eureka\u5BA2\u6237\u7AEF\u7684\u540D\u5B57
+spring:
+  application:
+    name: gateway
+#eureka\u76F8\u5173\u5B9E\u4F8B
+eureka:
+  instance:
+    lease-expiration-duration-in-seconds: 30
+    lease-renewal-interval-in-seconds: 10
+    #\u5728eureka\u4E2D\u663E\u793Aip\u5730\u5740
+    prefer-ip-address: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    #eureka\u670D\u52A1\u7AEF\u7684\u5730\u5740
+    serviceUrl:
+      defaultZone: http://localhost:7001/eureka/
