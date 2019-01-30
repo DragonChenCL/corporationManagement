@@ -1,7 +1,6 @@
 package com.dc.controller;
 
 import com.dc.dto.UserInfoDTO;
-import com.dc.entity.User;
 import com.dc.service.UserService;
 import com.dc.utils.ResponseEntity;
 import com.dc.utils.ResultEnum;

@@ -71,7 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         ,"/v2/**"
                         ,"/druid/**"
                 ).permitAll()
-                .antMatchers("/avatar/**").permitAll()
+                .antMatchers("/avatar/**","/honor/**","/logo/**").permitAll()
                 .antMatchers(exceptUrl).permitAll()
                 .anyRequest().authenticated()
                 .and().headers().cacheControl();
