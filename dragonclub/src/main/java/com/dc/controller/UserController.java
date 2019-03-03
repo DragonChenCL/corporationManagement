@@ -32,4 +32,17 @@ public class UserController {
         }
         return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"获取数据成功！",user);
     }
+
+    @ApiOperation(value = "更新用户信息")
+    @PostMapping("/detail")
+    public ResponseEntity updateUserInfo(@RequestBody UserInfoDTO userInfoDTO) throws Exception{
+        if(StringUtils.isBlank(userInfoDTO.toString())){
+            return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(),null);
+        }
+        Boolean flag = userService.updateUserInfo(userInfoDTO);
+        if (flag == false){
+            return ResponseEntity.res(ResultEnum.FAILURE.getCode(),null);
+        }
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"获取数据成功！");
+    }
 }

@@ -5,11 +5,9 @@ import com.dc.entity.User;
 import com.dc.repository.AuthoritiesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
 
 
 public class JwtUser implements UserDetails {
@@ -29,8 +27,6 @@ public class JwtUser implements UserDetails {
         id = user.getUserId();
         username = user.getUsername();
         password = user.getPassword();
-//        Authorities auth = authoritiesRepository.findAuthoritiesByAuthId(user.getAuthId());
-//        authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_TEST"));
     }
 
     public int getId() {

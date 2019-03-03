@@ -1,10 +1,15 @@
 package com.dc.entity;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
+@DynamicUpdate
+@DynamicInsert
 public class User {
     private int userId;
     private Integer authId;

@@ -24,9 +24,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 /**
  * 安全模块配置
- *
- * @author hackyo
- * Created on 2017/12/8 9:15.
  */
 @Configuration
 @EnableWebSecurity

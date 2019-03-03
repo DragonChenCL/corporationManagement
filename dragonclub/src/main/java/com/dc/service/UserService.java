@@ -7,7 +7,9 @@ import com.dc.entity.User;
 import com.dc.repository.AssociationRepository;
 import com.dc.repository.AuthoritiesRepository;
 import com.dc.repository.UserRepository;
-import org.springframework.beans.BeanUtils;
+import com.dc.utils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.aspectj.apache.bcel.generic.RET;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,4 +49,30 @@ public class UserService {
         }
         return userInfoDTO;
     }
+
+    /**
+     * 更新用户信息
+     * @param userInfoDTO
+     * @return
+     */
+
+    public Boolean updateUserInfo(UserInfoDTO userInfoDTO){
+        //暂时没有对数据进行校验 二期增加校验
+
+        boolean flag = false;
+        //先从数据库取出数据
+        User user = new User();
+        if (StringUtils.isNotBlank(String.valueOf(userInfoDTO.getUserId()))){
+           user = userRepository.findUserByUserId(userInfoDTO.getUserId());
+        }
+        BeanUtils.copyPropertiesExcludeNull(userInfoDTO,user);
+        try {
+            userRepository.save(user);
+            flag = true;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return flag;
+    }
+
 }

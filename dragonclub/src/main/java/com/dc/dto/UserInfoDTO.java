@@ -177,4 +177,29 @@ public class UserInfoDTO {
     public void setAssociation(String association) {
         this.association = association;
     }
+
+    @Override
+    public String toString() {
+        return "UserInfoDTO{" +
+                "userId=" + userId +
+                ", associationId=" + associationId +
+                ", username='" + username + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", birthday=" + birthday +
+                ", headPortrait='" + headPortrait + '\'' +
+                ", enable=" + enable +
+                ", registeryDate=" + registeryDate +
+                ", address='" + address + '\'' +
+                ", realName='" + realName + '\'' +
+                ", qq=" + qq +
+                ", college='" + college + '\'' +
+                ", myClass='" + myClass + '\'' +
+                ", sex='" + sex + '\'' +
+                ", introduction='" + introduction + '\'' +
+                ", position='" + position + '\'' +
+                ", roles='" + roles + '\'' +
+                ", association='" + association + '\'' +
+                '}';
+    }
 }
