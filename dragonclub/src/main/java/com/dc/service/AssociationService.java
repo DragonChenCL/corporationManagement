@@ -8,8 +8,14 @@ import com.dc.repository.CategoryRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,8 +30,6 @@ public class AssociationService {
 
     /**
      * 获取社团信息
-     * @param id
-     * @return
      */
     public AssociationInfoDTO getAssociationInfo(int id){
         AssociationInfoDTO associationInfoDTO = new AssociationInfoDTO();
@@ -45,5 +49,37 @@ public class AssociationService {
             }
         }
         return associationInfoDTO;
+    }
+
+    /**
+     * 更新社团logo
+     */
+    public int updateLogo(MultipartFile file, int assocId){
+        int flag = 0;
+
+        try {
+            String fileRealName = file.getOriginalFilename();
+            //后缀名
+            String sufix = fileRealName.substring(fileRealName.lastIndexOf("."));
+            String filePath = "E:\\idea_workspace\\corporationManagement\\dragonclub\\src\\main\\resources\\logo";
+
+            String savePath = filePath.substring(filePath.lastIndexOf("\\")+1);
+            File savedFile = new File(filePath);
+            if (!savedFile.exists()) {
+                savedFile.mkdirs();
+            }
+
+            String newName = new Date().getTime() + sufix;
+            savePath = "/"+savePath + "/"+ newName;
+            savedFile = new File(filePath + "\\",newName);
+            boolean isCreated = savedFile.createNewFile();
+            if (isCreated == true){
+                file.transferTo(savedFile);
+            }
+            flag = associationRepository.updateLogo(savePath, assocId);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return flag;
     }
 }
