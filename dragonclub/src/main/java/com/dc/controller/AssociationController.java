@@ -1,7 +1,6 @@
 package com.dc.controller;
 
 import com.dc.dto.AssociationInfoDTO;
-import com.dc.dto.UserInfoDTO;
 import com.dc.service.AssociationService;
 import com.dc.utils.ResponseEntity;
 import com.dc.utils.ResultEnum;
@@ -10,8 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.websocket.server.PathParam;
 
 @RestController
 @RequestMapping("/assoc")
@@ -39,16 +36,14 @@ public class AssociationController {
 
     @PostMapping("/updateLogo")
     @ApiOperation(value = "更新社团logo")
-    public ResponseEntity updateLogo(@RequestParam MultipartFile file , @RequestParam int assocId){
-        System.out.println(file);
-        System.out.println(assocId);
-        if(file == null || StringUtils.isBlank(String.valueOf(assocId))){
+    public ResponseEntity updateLogo(@RequestParam MultipartFile file , @RequestParam int assocId ,@RequestParam String logo){
+        if(file == null || StringUtils.isBlank(String.valueOf(assocId)) || StringUtils.isBlank(logo)){
             return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(),null);
         }
-        int flag = associationService.updateLogo(file, assocId);
-        if (flag == 0){
+        String outPath = associationService.updateLogo(file, assocId ,logo);
+        if (StringUtils.isBlank(outPath)){
             return ResponseEntity.res(ResultEnum.FAILURE.getCode(),null);
         }
-        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"获取数据成功！",null);
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"logo更新成功！",outPath);
     }
 }

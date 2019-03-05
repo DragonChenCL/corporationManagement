@@ -5,15 +5,15 @@ import com.dc.entity.Association;
 import com.dc.entity.Category;
 import com.dc.repository.AssociationRepository;
 import com.dc.repository.CategoryRepository;
+import com.dc.utils.UpLoadUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +27,10 @@ public class AssociationService {
     private AssociationRepository associationRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Value("${imgUrl.logo}")
+    private String logoUrl;
+
 
     /**
      * 获取社团信息
@@ -54,32 +58,15 @@ public class AssociationService {
     /**
      * 更新社团logo
      */
-    public int updateLogo(MultipartFile file, int assocId){
-        int flag = 0;
+    public String updateLogo(MultipartFile file, int assocId , String logo){
+        String outPath = "";
 
         try {
-            String fileRealName = file.getOriginalFilename();
-            //后缀名
-            String sufix = fileRealName.substring(fileRealName.lastIndexOf("."));
-            String filePath = "E:\\idea_workspace\\corporationManagement\\dragonclub\\src\\main\\resources\\logo";
-
-            String savePath = filePath.substring(filePath.lastIndexOf("\\")+1);
-            File savedFile = new File(filePath);
-            if (!savedFile.exists()) {
-                savedFile.mkdirs();
-            }
-
-            String newName = new Date().getTime() + sufix;
-            savePath = "/"+savePath + "/"+ newName;
-            savedFile = new File(filePath + "\\",newName);
-            boolean isCreated = savedFile.createNewFile();
-            if (isCreated == true){
-                file.transferTo(savedFile);
-            }
-            flag = associationRepository.updateLogo(savePath, assocId);
+            outPath = UpLoadUtil.upload(file,assocId,logo,logoUrl);
+            associationRepository.updateLogo(outPath, assocId);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return flag;
+        return outPath;
     }
 }
