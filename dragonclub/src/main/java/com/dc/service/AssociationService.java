@@ -41,10 +41,14 @@ public class AssociationService {
         if (association != null){
             BeanUtils.copyProperties(association,associationInfoDTO);
             //将荣誉和精彩瞬间拆分成list返回(注意是英文符号的;)
-            List<String> honor = Arrays.asList(association.getHonor().split(";"));
-            associationInfoDTO.setHonors(honor);
-            List<String> moment = Arrays.asList(association.getMomentImg().split(";"));
-            associationInfoDTO.setMomentImgs(moment);
+            if (association.getHonor() != null && association.getHonor().equals("")){
+                List<String> honor = Arrays.asList(association.getHonor().split(";"));
+                associationInfoDTO.setHonors(honor);
+            }
+            if (association.getMomentImg() != null && association.getMomentImg().equals("")){
+                List<String> moment = Arrays.asList(association.getMomentImg().split(";"));
+                associationInfoDTO.setMomentImgs(moment);
+            }
 
             //获取分类名称
             Category category = categoryRepository.findCategoryByCategoryId(association.getCategoryId());
