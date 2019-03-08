@@ -1,0 +1,46 @@
+server:
+  port: 8083
+spring:
+  #访问静态资源
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: file:E://idea_workspace//corporationManagement//dragonclub//src//main//resources/
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  datasource:
+    #druid数据源
+    druid:
+      username: root
+      password: 12345
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://47.100.185.39:3306/corporationmanagement?useUnicode=true&characterEncoding=utf8
+      initialSize: 1
+      minIdle: 1
+      maxActive: 5
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+logging:
+  config: classpath:log/logback-spring.xml
+  path: D:/nmyslog/nmys
+jwt:
+  header: Authorization
+  secret: mySecret
+  #token有效期一天
+  expiration: 86400
+  tokenHead: "Bearer "
+  exceptUrl: "/auth/**"
+#imgUrl：
+#  logo："E:\idea_workspace\corporationManagement\dragonclub\src\main\resources\logo"
+imgUrl:
+  logo: "E:\\idea_workspace\\corporationManagement\\dragonclub\\src\\main\\resources\\logo"
