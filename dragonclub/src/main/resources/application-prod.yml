@@ -5,7 +5,7 @@ spring:
   mvc:
     static-path-pattern: /**
   resources:
-    static-locations: file:E://idea_workspace//corporationManagement//dragonclub//src//main//resources/
+    static-locations: file:/var/lib/jenkins/workspace/corporationManage/dragonclub/target/dragonclub-0.0.1-SNAPSHOT.jar/BOOT-INF/classes/
   jpa:
     hibernate:
       ddl-auto: update
