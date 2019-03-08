@@ -17,7 +17,7 @@ public class UpLoadUtil {
 
         //删除旧图片
         String delPath = filePath +"\\"+ address.substring(address.lastIndexOf("/") + 1);
-        new File(delPath).delete();
+        boolean delete = new File(delPath).delete();
         //上传新的图片
         String savePath = filePath.substring(filePath.lastIndexOf("\\")+1);
         File savedFile = new File(filePath);
