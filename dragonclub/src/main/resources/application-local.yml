@@ -14,7 +14,7 @@ spring:
     #druid数据源
     druid:
       username: root
-      password: 123456
+      password: 12345
       driver-class-name: com.mysql.jdbc.Driver
       url: jdbc:mysql://localhost:3306/corporationmanagement?useUnicode=true&characterEncoding=utf8
       initialSize: 1
