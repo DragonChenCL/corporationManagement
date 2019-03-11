@@ -8,10 +8,15 @@ import com.dc.repository.AssociationRepository;
 import com.dc.repository.AuthoritiesRepository;
 import com.dc.repository.UserRepository;
 import com.dc.utils.BeanUtils;
+import com.dc.utils.UpLoadUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.apache.bcel.generic.RET;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 public class UserService {
@@ -23,6 +28,8 @@ public class UserService {
     @Autowired
     private AssociationRepository associationRepository;
 
+    @Value("${imgUrl.headPortrait}")
+    private String headPortraitUrl;
     /**
      * 获取用户信息
      * @param username
@@ -75,4 +82,18 @@ public class UserService {
         return flag;
     }
 
+    /**
+     * 更新社团logo
+     */
+    public String updateLogo(MultipartFile file, int assocId , String logo){
+        String outPath = "";
+
+        try {
+            outPath = UpLoadUtil.upload(file,assocId,logo,headPortraitUrl);
+            userRepository.updateheadPortrait(outPath, assocId);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return outPath;
+    }
 }

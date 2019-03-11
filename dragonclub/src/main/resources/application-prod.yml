@@ -5,7 +5,7 @@ spring:
   mvc:
     static-path-pattern: /**
   resources:
-    static-locations: classpath:/var/lib/jenkins/workspace/corporationManage/dragonclub/target/generated-sources/,file:/var/lib/jenkins/workspace/corporationManage/dragonclub/target/generated-sources/
+    static-locations: file:/var/lib/jenkins/workspace/corporationManage/dragonclub/target/generated-sources/
   jpa:
     hibernate:
       ddl-auto: update

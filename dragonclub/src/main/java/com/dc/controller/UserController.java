@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/user")
@@ -44,5 +45,18 @@ public class UserController {
             return ResponseEntity.res(ResultEnum.FAILURE.getCode(),null);
         }
         return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"获取数据成功！");
+    }
+
+    @PostMapping("/updateHeadPortrait")
+    @ApiOperation(value = "更新头像logo")
+    public ResponseEntity updateLogo(@RequestParam MultipartFile file , @RequestParam int userId , @RequestParam String headPortrait){
+        if(file == null || StringUtils.isBlank(String.valueOf(userId)) || StringUtils.isBlank(headPortrait)){
+            return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(),null);
+        }
+        String outPath = userService.updateLogo(file, userId ,headPortrait);
+        if (StringUtils.isBlank(outPath)){
+            return ResponseEntity.res(ResultEnum.FAILURE.getCode(),null);
+        }
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"头像更新成功！",outPath);
     }
 }
