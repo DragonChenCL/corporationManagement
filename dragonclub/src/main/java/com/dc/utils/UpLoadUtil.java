@@ -16,10 +16,10 @@ public class UpLoadUtil {
         String oldName = fileRealName.substring(0,fileRealName.lastIndexOf("."));
 
         //删除旧图片
-        String delPath = filePath +"\\"+ address.substring(address.lastIndexOf("/") + 1);
+        String delPath = filePath +"/"+ address.substring(address.lastIndexOf("/") + 1);
         boolean delete = new File(delPath).delete();
         //上传新的图片
-        String savePath = filePath.substring(filePath.lastIndexOf("\\")+1);
+        String savePath = filePath.substring(filePath.lastIndexOf("/")+1);
         File savedFile = new File(filePath);
         if (!savedFile.exists()) {
             savedFile.mkdirs();
