@@ -1,5 +1,5 @@
 server:
-  port: 8083
+  port: 8080
 spring:
   #访问静态资源
   mvc:
@@ -44,3 +44,4 @@ jwt:
 #  logo："E:\idea_workspace\corporationManagement\dragonclub\src\main\resources\logo"
 imgUrl:
   logo: "E:\\idea_workspace\\corporationManagement\\dragonclub\\src\\main\\resources\\logo"
+  headPortrait: "E:\\idea_workspace\\corporationManagement\\dragonclub\\src\\main\\resources\\avatar"
