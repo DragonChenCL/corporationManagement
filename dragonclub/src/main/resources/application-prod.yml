@@ -44,5 +44,5 @@ jwt:
 #  logo："E:\idea_workspace\corporationManagement\dragonclub\src\main\resources\logo"
 imgUrl:
   logo: "/var/lib/jenkins/workspace/corporationManage/dragonclub/target/generated-sources/logo"
-  headPortrait: "/var/lib/jenkins/workspace/corporationManage/dragonclub/target/generated-sources/avatar"
+  headPortrait: "//var//lib//jenkins//workspace//corporationManage//dragonclub//target//generated-sources//avatar"
   honor: "/var/lib/jenkins/workspace/corporationManage/dragonclub/target/generated-sources/honor"
