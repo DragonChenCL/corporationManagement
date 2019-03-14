@@ -85,12 +85,12 @@ public class UserService {
     /**
      * 更新社团logo
      */
-    public String updateLogo(MultipartFile file, int assocId , String logo){
+    public String updateLogo(MultipartFile file, int userId , String avatar){
         String outPath = "";
 
         try {
-            outPath = UpLoadUtil.upload(file,assocId,logo,headPortraitUrl);
-            userRepository.updateheadPortrait(outPath, assocId);
+            outPath = UpLoadUtil.upload(file,userId,avatar,headPortraitUrl);
+            userRepository.updateheadPortrait(outPath, userId);
         } catch (IOException e) {
             e.printStackTrace();
         }
