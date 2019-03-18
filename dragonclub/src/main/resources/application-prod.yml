@@ -32,7 +32,7 @@ spring:
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
 logging:
   config: classpath:log/logback-spring.xml
-  path: /var/lib/jenkins/workspace/corporationManage/dragonclub/target/generated-sources/log
+  path: "//var//lib//jenkins//workspace//corporationManage//dragonclub//target//generated-sources//log"
 jwt:
   header: Authorization
   secret: mySecret
