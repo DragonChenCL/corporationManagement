@@ -1,11 +1,14 @@
 package com.dc.service;
 
 import com.dc.dto.AssociationInfoDTO;
+import com.dc.dto.UserInfoDTO;
 import com.dc.entity.Association;
 import com.dc.entity.Category;
+import com.dc.entity.User;
 import com.dc.repository.AssociationRepository;
 import com.dc.repository.CategoryRepository;
 import com.dc.utils.UpLoadUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,5 +75,30 @@ public class AssociationService {
             e.printStackTrace();
         }
         return outPath;
+    }
+
+    /**
+     * 更新社团信息
+     * @param associationInfoDTO
+     * @return
+     */
+
+    public Boolean updateAssoInfo(AssociationInfoDTO associationInfoDTO){
+        //暂时没有对数据进行校验 二期增加校验
+
+        boolean flag = false;
+        //先从数据库取出数据
+        Association association = new Association();
+        if (StringUtils.isNotBlank(String.valueOf(associationInfoDTO.getAssociationId()))){
+            association = associationRepository.findAssociationByAssociationId(associationInfoDTO.getAssociationId());
+        }
+        com.dc.utils.BeanUtils.copyPropertiesExcludeNull(associationInfoDTO,association);
+        try {
+            associationRepository.save(association);
+            flag = true;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return flag;
     }
 }

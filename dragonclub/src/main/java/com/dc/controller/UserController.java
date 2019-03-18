@@ -44,7 +44,7 @@ public class UserController {
         if (flag == false){
             return ResponseEntity.res(ResultEnum.FAILURE.getCode(),null);
         }
-        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"获取数据成功！");
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"更新用户数据成功！");
     }
 
     @PostMapping("/updateHeadPortrait")

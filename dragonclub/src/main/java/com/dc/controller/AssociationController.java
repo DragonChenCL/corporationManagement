@@ -1,6 +1,7 @@
 package com.dc.controller;
 
 import com.dc.dto.AssociationInfoDTO;
+import com.dc.dto.UserInfoDTO;
 import com.dc.service.AssociationService;
 import com.dc.utils.ResponseEntity;
 import com.dc.utils.ResultEnum;
@@ -45,5 +46,18 @@ public class AssociationController {
             return ResponseEntity.res(ResultEnum.FAILURE.getCode(),null);
         }
         return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"logo更新成功！",outPath);
+    }
+
+    @ApiOperation(value = "更新社团信息")
+    @PostMapping("/detail")
+    public ResponseEntity updateUserInfo(@RequestBody AssociationInfoDTO associationInfoDTO) throws Exception{
+        if(StringUtils.isBlank(associationInfoDTO.toString())){
+            return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(),null);
+        }
+        Boolean flag = associationService.updateAssoInfo(associationInfoDTO);
+        if (flag == false){
+            return ResponseEntity.res(ResultEnum.FAILURE.getCode(),null);
+        }
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"更新社团信息成功！");
     }
 }
