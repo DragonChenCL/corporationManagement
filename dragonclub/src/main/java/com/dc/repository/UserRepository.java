@@ -1,6 +1,9 @@
 package com.dc.repository;
 
 import com.dc.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -32,4 +35,12 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     @Modifying
     @Query(value = "update User set headPortrait = ?1 where userId = ?2")
     int updateheadPortrait(String path ,int userId);
+
+    /**
+     * 获取成员列表
+     * @param userSpecification
+     * @param pageable
+     * @return
+     */
+    Page<User> findAll(Specification<User> userSpecification, Pageable pageable);
 }

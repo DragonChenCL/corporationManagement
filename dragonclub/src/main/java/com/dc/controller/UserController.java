@@ -1,12 +1,15 @@
 package com.dc.controller;
 
+import com.dc.dto.MemberListCondition;
 import com.dc.dto.UserInfoDTO;
+import com.dc.entity.User;
 import com.dc.service.UserService;
 import com.dc.utils.ResponseEntity;
 import com.dc.utils.ResultEnum;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +35,19 @@ public class UserController {
             return ResponseEntity.res(ResultEnum.TOKEN_IS_BLACKLIST.getCode(),null);
         }
         return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"获取数据成功！",user);
+    }
+
+    @ApiOperation(value = "获取成员列表")
+    @PostMapping("/memberList")
+    public ResponseEntity getMemberList(@RequestBody MemberListCondition memberListCondition) throws Exception{
+        if(memberListCondition == null){
+            return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(),null);
+        }
+        Page<User> memberList = userService.getMemberList(memberListCondition);
+        if (memberList == null){
+            return ResponseEntity.res(ResultEnum.USER_NOT_EXIST.getCode(),null);
+        }
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"获取数据成功！",memberList);
     }
 
     @ApiOperation(value = "更新用户信息")

@@ -1,5 +1,6 @@
 package com.dc.service;
 
+import com.dc.dto.MemberListCondition;
 import com.dc.dto.UserInfoDTO;
 import com.dc.entity.Association;
 import com.dc.entity.Authorities;
@@ -13,10 +14,21 @@ import org.apache.commons.lang3.StringUtils;
 import org.aspectj.apache.bcel.generic.RET;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -30,27 +42,29 @@ public class UserService {
 
     @Value("${imgUrl.headPortrait}")
     private String headPortraitUrl;
+
     /**
      * 获取用户信息
+     *
      * @param username
      * @return
      */
-    public UserInfoDTO getUserInfo(String username){
+    public UserInfoDTO getUserInfo(String username) {
         UserInfoDTO userInfoDTO = new UserInfoDTO();
         User user = userRepository.findUserByUsername(username);
-        if(user != null){
-            BeanUtils.copyProperties(user,userInfoDTO);
+        if (user != null) {
+            BeanUtils.copyProperties(user, userInfoDTO);
             Integer authId = user.getAuthId();
             //获取用户roles,角色名称
             Authorities authorities = authoritiesRepository.findAuthoritiesByAuthId(authId);
-            if (authorities != null){
+            if (authorities != null) {
                 userInfoDTO.setRoles(authorities.getAuthority().substring(5));
                 userInfoDTO.setPosition(authorities.getAuthorityName());
             }
             Integer associationId = user.getAssociationId();
             //获取社团名称
             Association association = associationRepository.findAssociationByAssociationId(associationId);
-            if (association != null){
+            if (association != null) {
                 userInfoDTO.setAssociation(association.getAssName());
             }
         }
@@ -59,24 +73,25 @@ public class UserService {
 
     /**
      * 更新用户信息
+     *
      * @param userInfoDTO
      * @return
      */
 
-    public Boolean updateUserInfo(UserInfoDTO userInfoDTO){
+    public Boolean updateUserInfo(UserInfoDTO userInfoDTO) {
         //暂时没有对数据进行校验 二期增加校验
 
         boolean flag = false;
         //先从数据库取出数据
         User user = new User();
-        if (StringUtils.isNotBlank(String.valueOf(userInfoDTO.getUserId()))){
-           user = userRepository.findUserByUserId(userInfoDTO.getUserId());
+        if (StringUtils.isNotBlank(String.valueOf(userInfoDTO.getUserId()))) {
+            user = userRepository.findUserByUserId(userInfoDTO.getUserId());
         }
-        BeanUtils.copyPropertiesExcludeNull(userInfoDTO,user);
+        BeanUtils.copyPropertiesExcludeNull(userInfoDTO, user);
         try {
             userRepository.save(user);
             flag = true;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return flag;
@@ -85,15 +100,42 @@ public class UserService {
     /**
      * 更新社团logo
      */
-    public String updateLogo(MultipartFile file, int userId , String avatar){
+    public String updateLogo(MultipartFile file, int userId, String avatar) {
         String outPath = "";
 
         try {
-            outPath = UpLoadUtil.upload(file,userId,avatar,headPortraitUrl);
+            outPath = UpLoadUtil.upload(file, userId, avatar, headPortraitUrl);
             userRepository.updateheadPortrait(outPath, userId);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return outPath;
     }
+
+    public Page<User> getMemberList(MemberListCondition condition) {
+        //CurrentPage从0开始
+        Pageable pageable = new PageRequest(condition.getCurrentPage() - 1, condition.getPageSize(), Sort.Direction.ASC, "userId");
+        Page<User> userPage = userRepository.findAll(new Specification<User>() {
+            @Override
+            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> list = new ArrayList<Predicate>();
+                if (null != condition.getRealName() && !"".equals(condition.getRealName())) {
+                    list.add(criteriaBuilder.like(root.get("realName").as(String.class), condition.getRealName()));
+                }
+                if (null != condition.getCollege() && !"".equals(condition.getCollege())) {
+                    list.add(criteriaBuilder.like(root.get("college").as(String.class), condition.getCollege()));
+                }
+                if (null != condition.getMyClass() && !"".equals(condition.getMyClass())) {
+                    list.add(criteriaBuilder.like(root.get("myClass").as(String.class), condition.getMyClass()));
+                }
+                if (null != condition.getEnable() && !"".equals(condition.getEnable())) {
+                    list.add(criteriaBuilder.equal(root.get("enable").as(Integer.class), Integer.valueOf(condition.getEnable())));
+                }
+                Predicate[] p = new Predicate[list.size()];
+                return criteriaBuilder.and(list.toArray(p));
+            }
+        }, pageable);
+        return userPage;
+    }
+
 }
