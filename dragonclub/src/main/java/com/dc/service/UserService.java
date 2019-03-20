@@ -114,7 +114,7 @@ public class UserService {
 
     public Page<User> getMemberList(MemberListCondition condition) {
         //CurrentPage从0开始
-        Pageable pageable = new PageRequest(condition.getCurrentPage() - 1, condition.getPageSize(), Sort.Direction.ASC, "userId");
+        Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize(), Sort.Direction.ASC, "userId");
         Page<User> userPage = userRepository.findAll(new Specification<User>() {
             @Override
             public Predicate toPredicate(Root<User> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
@@ -136,6 +136,10 @@ public class UserService {
             }
         }, pageable);
         return userPage;
+    }
+
+    public void deleteUserById(Integer userId){
+        userRepository.deleteById(userId);
     }
 
 }

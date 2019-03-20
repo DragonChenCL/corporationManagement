@@ -43,5 +43,5 @@ jwt:
 #imgUrl：
 #  logo："E:\idea_workspace\corporationManagement\dragonclub\src\main\resources\logo"
 imgUrl:
-  logo: "D:\\毕业设计、\\corporationManagement\\dragonclub\\src\\main\\resources\\logo"
-  headPortrait: "D:\\毕业设计、\\corporationManagement\\dragonclub\\src\\main\\resources\\avatar"
+  logo: "D://毕业设计、//corporationManagement//dragonclub//src//main//resources//logo"
+  headPortrait: "D://毕业设计、//corporationManagement//dragonclub//src//main//resources//avatar"

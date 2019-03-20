@@ -75,4 +75,20 @@ public class UserController {
         }
         return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"头像更新成功！",outPath);
     }
+
+    @DeleteMapping("/detail")
+    @ApiOperation(value = "删除用户")
+    public ResponseEntity deleteUser(@RequestParam("userId") Integer userId){
+        if(userId == null || StringUtils.isBlank(String.valueOf(userId))){
+            return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(),null);
+        }
+        try {
+            userService.deleteUserById(userId);
+            return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"删除成功！",null);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.res(ResultEnum.FAILURE.getCode(),"删除失败！",null);
+        }
+
+    }
 }
