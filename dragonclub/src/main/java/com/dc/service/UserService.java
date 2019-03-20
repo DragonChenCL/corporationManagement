@@ -98,7 +98,7 @@ public class UserService {
     }
 
     /**
-     * 更新社团logo
+     * 更新用户头像
      */
     public String updateLogo(MultipartFile file, int userId, String avatar) {
         String outPath = "";
@@ -120,13 +120,13 @@ public class UserService {
             public Predicate toPredicate(Root<User> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> list = new ArrayList<Predicate>();
                 if (null != condition.getRealName() && !"".equals(condition.getRealName())) {
-                    list.add(criteriaBuilder.like(root.get("realName").as(String.class), condition.getRealName()));
+                    list.add(criteriaBuilder.like(root.get("realName").as(String.class), "%" + condition.getRealName() + "%"));
                 }
                 if (null != condition.getCollege() && !"".equals(condition.getCollege())) {
-                    list.add(criteriaBuilder.like(root.get("college").as(String.class), condition.getCollege()));
+                    list.add(criteriaBuilder.like(root.get("college").as(String.class), "%" + condition.getCollege() + "%"));
                 }
                 if (null != condition.getMyClass() && !"".equals(condition.getMyClass())) {
-                    list.add(criteriaBuilder.like(root.get("myClass").as(String.class), condition.getMyClass()));
+                    list.add(criteriaBuilder.like(root.get("myClass").as(String.class), "%" + condition.getMyClass() + "%"));
                 }
                 if (null != condition.getEnable() && !"".equals(condition.getEnable())) {
                     list.add(criteriaBuilder.equal(root.get("enable").as(Integer.class), Integer.valueOf(condition.getEnable())));
