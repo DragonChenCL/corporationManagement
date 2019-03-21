@@ -10,4 +10,6 @@ public interface AuthoritiesRepository extends JpaRepository<Authorities,Integer
      * @return
      */
     public Authorities findAuthoritiesByAuthId(int id);
+
+
 }

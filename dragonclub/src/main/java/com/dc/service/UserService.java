@@ -2,12 +2,8 @@ package com.dc.service;
 
 import com.dc.dto.MemberListCondition;
 import com.dc.dto.UserInfoDTO;
-import com.dc.entity.Association;
-import com.dc.entity.Authorities;
-import com.dc.entity.User;
-import com.dc.repository.AssociationRepository;
-import com.dc.repository.AuthoritiesRepository;
-import com.dc.repository.UserRepository;
+import com.dc.entity.*;
+import com.dc.repository.*;
 import com.dc.utils.BeanUtils;
 import com.dc.utils.UpLoadUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +35,10 @@ public class UserService {
     private AuthoritiesRepository authoritiesRepository;
     @Autowired
     private AssociationRepository associationRepository;
+    @Autowired
+    private MyclassRepository myclassRepository;
+    @Autowired
+    private CollegeRepository collegeRepository;
 
     @Value("${imgUrl.headPortrait}")
     private String headPortraitUrl;
@@ -66,6 +66,20 @@ public class UserService {
             Association association = associationRepository.findAssociationByAssociationId(associationId);
             if (association != null) {
                 userInfoDTO.setAssociation(association.getAssName());
+            }
+            //获取学院信息
+            if (user.getCollegeId() != null){
+                College college = collegeRepository.findCollegeByCollegeId(user.getCollegeId());
+                if (college != null){
+                    userInfoDTO.setCollege(college.getCollegeName());
+                }
+            }
+            //获取班级信息
+            if (user.getMyclassId() != null){
+                Myclass myclass = myclassRepository.findMyclassByClassId(user.getMyclassId());
+                if (myclass != null){
+                    userInfoDTO.setMyClass(myclass.getClassName());
+                }
             }
         }
         return userInfoDTO;

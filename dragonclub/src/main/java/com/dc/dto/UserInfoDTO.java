@@ -25,6 +25,24 @@ public class UserInfoDTO {
     private String position;
     private String roles;
     private String association;
+    private Integer collegeId;
+    private Integer myclassId;
+
+    public Integer getCollegeId() {
+        return collegeId;
+    }
+
+    public void setCollegeId(Integer collegeId) {
+        this.collegeId = collegeId;
+    }
+
+    public Integer getMyclassId() {
+        return myclassId;
+    }
+
+    public void setMyclassId(Integer myclassId) {
+        this.myclassId = myclassId;
+    }
 
     public Integer getAssociationId() {
         return associationId;

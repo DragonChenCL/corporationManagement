@@ -11,7 +11,7 @@ import java.util.Objects;
 @DynamicUpdate
 @DynamicInsert
 public class User {
-    private int userId;
+    private Integer userId;
     private Integer authId;
     private Integer associationId;
     private String username;
@@ -25,8 +25,8 @@ public class User {
     private String address;
     private String realName;
     private String qq;
-    private String college;
-    private String myClass;
+    private Integer collegeId;
+    private Integer myclassId;
     private String sex;
     private String introduction;
     private String position;
@@ -44,11 +44,11 @@ public class User {
 
     @Id
     @Column(name = "user_id")
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -181,25 +181,23 @@ public class User {
     public void setQq(String qq) {
         this.qq = qq;
     }
-
     @Basic
-    @Column(name = "college")
-    public String getCollege() {
-        return college;
+    @Column(name = "college_id")
+    public Integer getCollegeId() {
+        return collegeId;
     }
 
-    public void setCollege(String college) {
-        this.college = college;
+    public void setCollegeId(Integer collegeId) {
+        this.collegeId = collegeId;
     }
-
     @Basic
-    @Column(name = "my_class")
-    public String getMyClass() {
-        return myClass;
+    @Column(name = "myclass_id")
+    public Integer getMyclassId() {
+        return myclassId;
     }
 
-    public void setMyClass(String myClass) {
-        this.myClass = myClass;
+    public void setMyclassId(Integer myclassId) {
+        this.myclassId = myclassId;
     }
 
     @Basic
@@ -251,8 +249,8 @@ public class User {
                 Objects.equals(address, user.address) &&
                 Objects.equals(realName, user.realName) &&
                 Objects.equals(qq, user.qq) &&
-                Objects.equals(college, user.college) &&
-                Objects.equals(myClass, user.myClass) &&
+                Objects.equals(collegeId, user.collegeId) &&
+                Objects.equals(myclassId, user.myclassId) &&
                 Objects.equals(sex, user.sex) &&
                 Objects.equals(introduction, user.introduction) &&
                 Objects.equals(position, user.position);
@@ -260,6 +258,6 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, authId, associationId, username, password, phoneNumber, email, birthday, headPortrait, enable, registeryDate, address, realName, qq, college, myClass, sex, introduction, position);
+        return Objects.hash(userId, authId, associationId, username, password, phoneNumber, email, birthday, headPortrait, enable, registeryDate, address, realName, qq, collegeId, myclassId, sex, introduction, position);
     }
 }
