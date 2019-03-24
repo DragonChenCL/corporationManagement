@@ -7,11 +7,20 @@ import lombok.Data;
  */
 public class MemberListCondition {
     private String realName;
-    private String college;
-    private String myClass;
+    private Integer collegeId;
+    private Integer myclassId;
     private String enable;
+    private Integer associationId;
     private Integer currentPage;
     private Integer pageSize;
+
+    public Integer getAssociationId() {
+        return associationId;
+    }
+
+    public void setAssociationId(Integer associationId) {
+        this.associationId = associationId;
+    }
 
     public String getRealName() {
         return realName;
@@ -21,20 +30,20 @@ public class MemberListCondition {
         this.realName = realName;
     }
 
-    public String getCollege() {
-        return college;
+    public Integer getCollegeId() {
+        return collegeId;
     }
 
-    public void setCollege(String college) {
-        this.college = college;
+    public void setCollegeId(Integer collegeId) {
+        this.collegeId = collegeId;
     }
 
-    public String getMyClass() {
-        return myClass;
+    public Integer getMyclassId() {
+        return myclassId;
     }
 
-    public void setMyClass(String myClass) {
-        this.myClass = myClass;
+    public void setMyclassId(Integer myclassId) {
+        this.myclassId = myclassId;
     }
 
     public String getEnable() {

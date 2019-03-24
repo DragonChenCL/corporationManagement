@@ -30,6 +30,7 @@ public class User {
     private String sex;
     private String introduction;
     private String position;
+    private Integer status;
     //维护一对一的关系
 //    private Authorities authorities;
 //
@@ -50,6 +51,15 @@ public class User {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+    @Basic
+    @Column(name = "status")
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     @Basic

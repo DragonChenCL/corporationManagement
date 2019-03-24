@@ -1,6 +1,7 @@
 package com.dc.service;
 
 import com.dc.dto.MemberListCondition;
+import com.dc.dto.PageDTO;
 import com.dc.dto.UserInfoDTO;
 import com.dc.entity.*;
 import com.dc.repository.*;
@@ -68,16 +69,16 @@ public class UserService {
                 userInfoDTO.setAssociation(association.getAssName());
             }
             //获取学院信息
-            if (user.getCollegeId() != null){
+            if (user.getCollegeId() != null) {
                 College college = collegeRepository.findCollegeByCollegeId(user.getCollegeId());
-                if (college != null){
+                if (college != null) {
                     userInfoDTO.setCollege(college.getCollegeName());
                 }
             }
             //获取班级信息
-            if (user.getMyclassId() != null){
+            if (user.getMyclassId() != null) {
                 Myclass myclass = myclassRepository.findMyclassByClassId(user.getMyclassId());
-                if (myclass != null){
+                if (myclass != null) {
                     userInfoDTO.setMyClass(myclass.getClassName());
                 }
             }
@@ -126,7 +127,7 @@ public class UserService {
         return outPath;
     }
 
-    public Page<User> getMemberList(MemberListCondition condition) {
+    public PageDTO<UserInfoDTO> getMemberList(MemberListCondition condition) {
         //CurrentPage从0开始
         Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize(), Sort.Direction.ASC, "userId");
         Page<User> userPage = userRepository.findAll(new Specification<User>() {
@@ -136,23 +137,38 @@ public class UserService {
                 if (null != condition.getRealName() && !"".equals(condition.getRealName())) {
                     list.add(criteriaBuilder.like(root.get("realName").as(String.class), "%" + condition.getRealName() + "%"));
                 }
-                if (null != condition.getCollege() && !"".equals(condition.getCollege())) {
-                    list.add(criteriaBuilder.like(root.get("college").as(String.class), "%" + condition.getCollege() + "%"));
+                if (null != condition.getCollegeId() &&  !"".equals(condition.getCollegeId())) {
+                    list.add(criteriaBuilder.equal(root.get("collegeId").as(Integer.class),condition.getCollegeId()));
                 }
-                if (null != condition.getMyClass() && !"".equals(condition.getMyClass())) {
-                    list.add(criteriaBuilder.like(root.get("myClass").as(String.class), "%" + condition.getMyClass() + "%"));
+                if (null != condition.getAssociationId() &&  0 != condition.getAssociationId()) {
+                    list.add(criteriaBuilder.equal(root.get("associationId").as(Integer.class),condition.getAssociationId()));
+                }
+                if (null != condition.getMyclassId() && !"".equals(condition.getMyclassId())) {
+                    list.add(criteriaBuilder.equal(root.get("myclassId").as(Integer.class), condition.getMyclassId()));
                 }
                 if (null != condition.getEnable() && !"".equals(condition.getEnable())) {
                     list.add(criteriaBuilder.equal(root.get("enable").as(Integer.class), Integer.valueOf(condition.getEnable())));
                 }
+                //判断是否加入社团
+                list.add(criteriaBuilder.equal(root.get("status").as(Integer.class), 0));
                 Predicate[] p = new Predicate[list.size()];
                 return criteriaBuilder.and(list.toArray(p));
             }
         }, pageable);
-        return userPage;
+        PageDTO<UserInfoDTO> pageDTO = new PageDTO<>();
+        BeanUtils.copyPropertiesExcludeNull(userPage, pageDTO);
+        List<UserInfoDTO> list = new ArrayList<>();
+        if (userPage.getContent() != null && userPage.getContent().size() != 0){
+            for (User user : userPage.getContent()) {
+                UserInfoDTO userInfo = getUserInfo(user.getUsername());
+                list.add(userInfo);
+            }
+        }
+        pageDTO.setContents(list);
+        return pageDTO;
     }
 
-    public void deleteUserById(Integer userId){
+    public void deleteUserById(Integer userId) {
         userRepository.deleteById(userId);
     }
 

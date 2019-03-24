@@ -1,6 +1,7 @@
 package com.dc.controller;
 
 import com.dc.dto.MemberListCondition;
+import com.dc.dto.PageDTO;
 import com.dc.dto.UserInfoDTO;
 import com.dc.entity.User;
 import com.dc.service.UserService;
@@ -43,7 +44,7 @@ public class UserController {
         if(memberListCondition == null){
             return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(),null);
         }
-        Page<User> memberList = userService.getMemberList(memberListCondition);
+        PageDTO<UserInfoDTO> memberList = userService.getMemberList(memberListCondition);
         if (memberList == null){
             return ResponseEntity.res(ResultEnum.USER_NOT_EXIST.getCode(),null);
         }
