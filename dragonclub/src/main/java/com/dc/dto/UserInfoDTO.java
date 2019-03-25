@@ -1,13 +1,15 @@
 package com.dc.dto;
 
+import com.dc.entity.UserAssoc;
+
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * 个人信息类
  */
 public class UserInfoDTO {
     private int userId;
-    private Integer associationId;
     private String username;
     private String phoneNumber;
     private String email;
@@ -24,9 +26,17 @@ public class UserInfoDTO {
     private String introduction;
     private String position;
     private String roles;
-    private String association;
     private Integer collegeId;
     private Integer myclassId;
+    private List<UserAssocDTO> userAssocs;
+
+    public List<UserAssocDTO> getUserAssocs() {
+        return userAssocs;
+    }
+
+    public void setUserAssocs(List<UserAssocDTO> userAssocs) {
+        this.userAssocs = userAssocs;
+    }
 
     public Integer getCollegeId() {
         return collegeId;
@@ -44,13 +54,6 @@ public class UserInfoDTO {
         this.myclassId = myclassId;
     }
 
-    public Integer getAssociationId() {
-        return associationId;
-    }
-
-    public void setAssociationId(Integer associationId) {
-        this.associationId = associationId;
-    }
 
     public int getUserId() {
         return userId;
@@ -188,19 +191,11 @@ public class UserInfoDTO {
         this.roles = roles;
     }
 
-    public String getAssociation() {
-        return association;
-    }
-
-    public void setAssociation(String association) {
-        this.association = association;
-    }
 
     @Override
     public String toString() {
         return "UserInfoDTO{" +
                 "userId=" + userId +
-                ", associationId=" + associationId +
                 ", username='" + username + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", email='" + email + '\'' +
@@ -217,7 +212,6 @@ public class UserInfoDTO {
                 ", introduction='" + introduction + '\'' +
                 ", position='" + position + '\'' +
                 ", roles='" + roles + '\'' +
-                ", association='" + association + '\'' +
                 '}';
     }
 }

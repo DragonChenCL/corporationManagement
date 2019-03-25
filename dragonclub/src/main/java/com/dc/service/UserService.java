@@ -2,6 +2,7 @@ package com.dc.service;
 
 import com.dc.dto.MemberListCondition;
 import com.dc.dto.PageDTO;
+import com.dc.dto.UserAssocDTO;
 import com.dc.dto.UserInfoDTO;
 import com.dc.entity.*;
 import com.dc.repository.*;
@@ -25,30 +26,34 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private AuthoritiesRepository authoritiesRepository;
-    @Autowired
-    private AssociationRepository associationRepository;
-    @Autowired
-    private MyclassRepository myclassRepository;
-    @Autowired
-    private CollegeRepository collegeRepository;
+    private final UserRepository userRepository;
+    private final AuthoritiesRepository authoritiesRepository;
+    private final AssociationRepository associationRepository;
+    private final MyclassRepository myclassRepository;
+    private final CollegeRepository collegeRepository;
+//    private final UserAssocRepository userAssocRepository;
 
     @Value("${imgUrl.headPortrait}")
     private String headPortraitUrl;
 
+    @Autowired
+    public UserService(UserRepository userRepository, AuthoritiesRepository authoritiesRepository, AssociationRepository associationRepository, MyclassRepository myclassRepository, CollegeRepository collegeRepository) {
+        this.userRepository = userRepository;
+        this.authoritiesRepository = authoritiesRepository;
+        this.associationRepository = associationRepository;
+        this.myclassRepository = myclassRepository;
+        this.collegeRepository = collegeRepository;
+//        this.userAssocRepository = userAssocRepository;
+    }
+
     /**
      * 获取用户信息
-     *
-     * @param username
-     * @return
      */
     public UserInfoDTO getUserInfo(String username) {
         UserInfoDTO userInfoDTO = new UserInfoDTO();
@@ -62,12 +67,22 @@ public class UserService {
                 userInfoDTO.setRoles(authorities.getAuthority().substring(5));
                 userInfoDTO.setPosition(authorities.getAuthorityName());
             }
-            Integer associationId = user.getAssociationId();
-            //获取社团名称
-            Association association = associationRepository.findAssociationByAssociationId(associationId);
-            if (association != null) {
-                userInfoDTO.setAssociation(association.getAssName());
+            //获取社团和状态信息
+            List<UserAssoc> userAssocs = new ArrayList<>();
+            List<UserAssocDTO> userAssocDTOS = new ArrayList<>();
+//            userAssocs = userAssocRepository.findUserAssocByUserId(user.getUserId());
+            if (userAssocs.size() != 0) {
+                for (UserAssoc userAssoc : userAssocs) {
+                    UserAssocDTO userAssocDTO = new UserAssocDTO();
+                    Association associationByAssociationId = associationRepository.findAssociationByAssociationId(userAssoc.getAssociationId());
+                    userAssocDTO.setAssocId(associationByAssociationId.getAssociationId());
+                    userAssocDTO.setAssocName(associationByAssociationId.getAssName());
+                    userAssocDTO.setStatus(userAssoc.getStatus());
+                    userAssocDTOS.add(userAssocDTO);
+                }
+                userInfoDTO.setUserAssocs(userAssocDTOS);
             }
+
             //获取学院信息
             if (user.getCollegeId() != null) {
                 College college = collegeRepository.findCollegeByCollegeId(user.getCollegeId());
@@ -137,34 +152,26 @@ public class UserService {
                 if (null != condition.getRealName() && !"".equals(condition.getRealName())) {
                     list.add(criteriaBuilder.like(root.get("realName").as(String.class), "%" + condition.getRealName() + "%"));
                 }
-                if (null != condition.getCollegeId() &&  !"".equals(condition.getCollegeId())) {
-                    list.add(criteriaBuilder.equal(root.get("collegeId").as(Integer.class),condition.getCollegeId()));
+                if (null != condition.getCollegeId() && !"".equals(String.valueOf(condition.getCollegeId()))) {
+                    list.add(criteriaBuilder.equal(root.get("collegeId").as(Integer.class), condition.getCollegeId()));
                 }
-                if (null != condition.getAssociationId() &&  0 != condition.getAssociationId()) {
-                    list.add(criteriaBuilder.equal(root.get("associationId").as(Integer.class),condition.getAssociationId()));
+                if (null != condition.getAssociationId() && 0 != condition.getAssociationId()) {
+                    list.add(criteriaBuilder.like(root.get("associationId").as(String.class), "%" + String.valueOf(condition.getAssociationId()) + "%"));
                 }
-                if (null != condition.getMyclassId() && !"".equals(condition.getMyclassId())) {
+                if (null != condition.getMyclassId() && !"".equals(String.valueOf(condition.getMyclassId()))) {
                     list.add(criteriaBuilder.equal(root.get("myclassId").as(Integer.class), condition.getMyclassId()));
                 }
                 if (null != condition.getEnable() && !"".equals(condition.getEnable())) {
                     list.add(criteriaBuilder.equal(root.get("enable").as(Integer.class), Integer.valueOf(condition.getEnable())));
                 }
-                //判断是否加入社团
-                list.add(criteriaBuilder.equal(root.get("status").as(Integer.class), 0));
+                //管理员信息不拿出
+                list.add(criteriaBuilder.notEqual(root.get("authId").as(Integer.class), 2));
+
                 Predicate[] p = new Predicate[list.size()];
                 return criteriaBuilder.and(list.toArray(p));
             }
         }, pageable);
         PageDTO<UserInfoDTO> pageDTO = new PageDTO<>();
-        BeanUtils.copyPropertiesExcludeNull(userPage, pageDTO);
-        List<UserInfoDTO> list = new ArrayList<>();
-        if (userPage.getContent() != null && userPage.getContent().size() != 0){
-            for (User user : userPage.getContent()) {
-                UserInfoDTO userInfo = getUserInfo(user.getUsername());
-                list.add(userInfo);
-            }
-        }
-        pageDTO.setContents(list);
         return pageDTO;
     }
 

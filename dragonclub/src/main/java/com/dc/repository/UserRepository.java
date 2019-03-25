@@ -1,5 +1,6 @@
 package com.dc.repository;
 
+import com.dc.dto.UserInfoDTO;
 import com.dc.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,4 +44,5 @@ public interface UserRepository extends JpaRepository<User,Integer> {
      * @return
      */
     Page<User> findAll(Specification<User> userSpecification, Pageable pageable);
+
 }

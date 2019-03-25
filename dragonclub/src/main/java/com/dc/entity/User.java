@@ -2,9 +2,11 @@ package com.dc.entity;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.ManyToAny;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -13,7 +15,7 @@ import java.util.Objects;
 public class User {
     private Integer userId;
     private Integer authId;
-    private Integer associationId;
+    private String associationId;
     private String username;
     private String password;
     private String phoneNumber;
@@ -30,18 +32,20 @@ public class User {
     private String sex;
     private String introduction;
     private String position;
-    private Integer status;
-    //维护一对一的关系
-//    private Authorities authorities;
-//
-//    @OneToOne()
-//    public Authorities getAuthorities() {
-//        return authorities;
-//    }
-//
-//    public void setAuthorities(Authorities authorities) {
-//        this.authorities = authorities;
-//    }
+    private String status;
+
+    private List<Association> associationList;
+
+    @ManyToMany
+    @JoinTable(name = "user_assoc",joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "association_id"))
+    public List<Association> getAssociationList() {
+        return associationList;
+    }
+
+    public void setAssociationList(List<Association> associationList) {
+        this.associationList = associationList;
+    }
 
     @Id
     @Column(name = "user_id")
@@ -54,11 +58,11 @@ public class User {
     }
     @Basic
     @Column(name = "status")
-    public Integer getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -74,11 +78,11 @@ public class User {
 
     @Basic
     @Column(name = "association_id")
-    public Integer getAssociationId() {
+    public String getAssociationId() {
         return associationId;
     }
 
-    public void setAssociationId(Integer associationId) {
+    public void setAssociationId(String associationId) {
         this.associationId = associationId;
     }
 

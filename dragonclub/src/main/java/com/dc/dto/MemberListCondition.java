@@ -13,6 +13,15 @@ public class MemberListCondition {
     private Integer associationId;
     private Integer currentPage;
     private Integer pageSize;
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public Integer getAssociationId() {
         return associationId;

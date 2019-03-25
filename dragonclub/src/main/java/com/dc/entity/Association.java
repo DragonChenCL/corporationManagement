@@ -1,10 +1,8 @@
 package com.dc.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -22,6 +20,16 @@ public class Association {
     private String logo;
     private String momentImg;
     private String address;
+    private List<User> userList;
+
+    @ManyToMany(mappedBy = "associationList")
+    public List<User> getUserList() {
+        return userList;
+    }
+
+    public void setUserList(List<User> userList) {
+        this.userList = userList;
+    }
 
     @Id
     @Column(name = "association_id")
