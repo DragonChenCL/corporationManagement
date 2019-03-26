@@ -20,16 +20,16 @@ public class Association {
     private String logo;
     private String momentImg;
     private String address;
-    private List<User> userList;
-
-    @ManyToMany(mappedBy = "associationList")
-    public List<User> getUserList() {
-        return userList;
-    }
-
-    public void setUserList(List<User> userList) {
-        this.userList = userList;
-    }
+//    private List<User> userList;
+//
+//    @ManyToMany(mappedBy = "associationList")
+//    public List<User> getUserList() {
+//        return userList;
+//    }
+//
+//    public void setUserList(List<User> userList) {
+//        this.userList = userList;
+//    }
 
     @Id
     @Column(name = "association_id")

@@ -1,7 +1,11 @@
 package com.dc.dto;
 
+import lombok.Builder;
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 public class PageDTO<T> {
     private List<T> contents;
     private Long totalElements;

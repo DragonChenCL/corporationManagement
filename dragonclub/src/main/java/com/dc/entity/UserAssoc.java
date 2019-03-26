@@ -2,7 +2,7 @@ package com.dc.entity;
 
 import javax.persistence.*;
 
-//@Entity
+@Entity
 public class UserAssoc {
     private Integer userId;
     private Integer associationId;

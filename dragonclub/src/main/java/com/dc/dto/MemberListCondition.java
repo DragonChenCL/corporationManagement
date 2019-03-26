@@ -9,7 +9,7 @@ public class MemberListCondition {
     private String realName;
     private Integer collegeId;
     private Integer myclassId;
-    private String enable;
+    private Integer enable;
     private Integer associationId;
     private Integer currentPage;
     private Integer pageSize;
@@ -55,11 +55,11 @@ public class MemberListCondition {
         this.myclassId = myclassId;
     }
 
-    public String getEnable() {
+    public Integer getEnable() {
         return enable;
     }
 
-    public void setEnable(String enable) {
+    public void setEnable(Integer enable) {
         this.enable = enable;
     }
 

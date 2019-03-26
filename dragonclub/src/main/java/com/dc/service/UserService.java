@@ -1,5 +1,6 @@
 package com.dc.service;
 
+import com.dc.dao.UserDAO;
 import com.dc.dto.MemberListCondition;
 import com.dc.dto.PageDTO;
 import com.dc.dto.UserAssocDTO;
@@ -8,8 +9,11 @@ import com.dc.entity.*;
 import com.dc.repository.*;
 import com.dc.utils.BeanUtils;
 import com.dc.utils.UpLoadUtil;
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Predicate;
 import org.apache.commons.lang3.StringUtils;
-import org.aspectj.apache.bcel.generic.RET;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -20,43 +24,44 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import static java.util.stream.IntStream.builder;
 
 @Service
 public class UserService {
+
+    @Autowired
+    private UserDAO userDAO;
 
     private final UserRepository userRepository;
     private final AuthoritiesRepository authoritiesRepository;
     private final AssociationRepository associationRepository;
     private final MyclassRepository myclassRepository;
     private final CollegeRepository collegeRepository;
-//    private final UserAssocRepository userAssocRepository;
+    private final UserAssocRepository userAssocRepository;
 
     @Value("${imgUrl.headPortrait}")
     private String headPortraitUrl;
 
     @Autowired
-    public UserService(UserRepository userRepository, AuthoritiesRepository authoritiesRepository, AssociationRepository associationRepository, MyclassRepository myclassRepository, CollegeRepository collegeRepository) {
+    public UserService(UserRepository userRepository, AuthoritiesRepository authoritiesRepository, AssociationRepository associationRepository, MyclassRepository myclassRepository, CollegeRepository collegeRepository, UserAssocRepository userAssocRepository) {
         this.userRepository = userRepository;
         this.authoritiesRepository = authoritiesRepository;
         this.associationRepository = associationRepository;
         this.myclassRepository = myclassRepository;
         this.collegeRepository = collegeRepository;
-//        this.userAssocRepository = userAssocRepository;
+        this.userAssocRepository = userAssocRepository;
     }
 
     /**
      * 获取用户信息
      */
     public UserInfoDTO getUserInfo(String username) {
-        UserInfoDTO userInfoDTO = new UserInfoDTO();
+        UserInfoDTO userInfoDTO = UserInfoDTO.builder().build();
         User user = userRepository.findUserByUsername(username);
         if (user != null) {
             BeanUtils.copyProperties(user, userInfoDTO);
@@ -70,7 +75,7 @@ public class UserService {
             //获取社团和状态信息
             List<UserAssoc> userAssocs = new ArrayList<>();
             List<UserAssocDTO> userAssocDTOS = new ArrayList<>();
-//            userAssocs = userAssocRepository.findUserAssocByUserId(user.getUserId());
+            userAssocs = userAssocRepository.findUserAssocByUserId(user.getUserId());
             if (userAssocs.size() != 0) {
                 for (UserAssoc userAssoc : userAssocs) {
                     UserAssocDTO userAssocDTO = new UserAssocDTO();
@@ -145,33 +150,48 @@ public class UserService {
     public PageDTO<UserInfoDTO> getMemberList(MemberListCondition condition) {
         //CurrentPage从0开始
         Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize(), Sort.Direction.ASC, "userId");
-        Page<User> userPage = userRepository.findAll(new Specification<User>() {
-            @Override
-            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> list = new ArrayList<Predicate>();
-                if (null != condition.getRealName() && !"".equals(condition.getRealName())) {
-                    list.add(criteriaBuilder.like(root.get("realName").as(String.class), "%" + condition.getRealName() + "%"));
-                }
-                if (null != condition.getCollegeId() && !"".equals(String.valueOf(condition.getCollegeId()))) {
-                    list.add(criteriaBuilder.equal(root.get("collegeId").as(Integer.class), condition.getCollegeId()));
-                }
-                if (null != condition.getAssociationId() && 0 != condition.getAssociationId()) {
-                    list.add(criteriaBuilder.like(root.get("associationId").as(String.class), "%" + String.valueOf(condition.getAssociationId()) + "%"));
-                }
-                if (null != condition.getMyclassId() && !"".equals(String.valueOf(condition.getMyclassId()))) {
-                    list.add(criteriaBuilder.equal(root.get("myclassId").as(Integer.class), condition.getMyclassId()));
-                }
-                if (null != condition.getEnable() && !"".equals(condition.getEnable())) {
-                    list.add(criteriaBuilder.equal(root.get("enable").as(Integer.class), Integer.valueOf(condition.getEnable())));
-                }
-                //管理员信息不拿出
-                list.add(criteriaBuilder.notEqual(root.get("authId").as(Integer.class), 2));
 
-                Predicate[] p = new Predicate[list.size()];
-                return criteriaBuilder.and(list.toArray(p));
-            }
-        }, pageable);
-        PageDTO<UserInfoDTO> pageDTO = new PageDTO<>();
+        QUser user = QUser.user;
+        QUserAssoc userAssoc = QUserAssoc.userAssoc;
+
+        //初始化组装条件(类似where 1=1)
+        Predicate predicate = user.isNotNull().or(user.isNull());
+        //执行动态条件拼装
+        if (null != condition.getRealName() && !"".equals(condition.getRealName())) {
+            predicate = ExpressionUtils.and(predicate, user.realName.like("%"+condition.getRealName()+"%"));
+        }
+        if (null != condition.getAssociationId() && !"".equals(String.valueOf(condition.getAssociationId()))) {
+            predicate = ExpressionUtils.and(predicate, userAssoc.associationId.eq(condition.getAssociationId()));
+        }
+        if (null != condition.getCollegeId() && !"".equals(String.valueOf(condition.getCollegeId()))) {
+            predicate = ExpressionUtils.and(predicate, user.collegeId.eq(condition.getCollegeId()));
+        }
+        if (null != condition.getMyclassId() && !"".equals(String.valueOf(condition.getMyclassId()))) {
+            predicate = ExpressionUtils.and(predicate, user.myclassId.eq(condition.getMyclassId()));
+        }
+        if (null != condition.getEnable() && !"".equals(String.valueOf(condition.getEnable()))) {
+            predicate = ExpressionUtils.and(predicate, user.enable.eq(condition.getEnable()));
+        }
+        //管理员信息不拿出
+        ExpressionUtils.and(predicate, user.authId.notIn(2));
+        //查看是否通过审核
+        predicate = ExpressionUtils.and(predicate, userAssoc.status.eq(condition.getStatus()));
+        //使用queryDSL框架
+        PageDTO<UserInfoDTO> pageDTO = new PageDTO<UserInfoDTO>();
+        QueryResults<Tuple> findpage = userDAO.findpage(predicate, pageable);
+        List<UserInfoDTO> list = new ArrayList<>();
+        for (Tuple result : findpage.getResults()) {
+            UserInfoDTO userInfoDTO = UserInfoDTO.builder().build();
+            //这个数组得到就是查询出的每一个属性（或者类）的集合
+            Object[] objects = result.toArray();
+            BeanUtils.copyPropertiesExcludeNull(objects[0], userInfoDTO);
+            userInfoDTO.setStatus(objects[1].toString());
+            userInfoDTO.setCollege(objects[3].toString());
+            userInfoDTO.setMyClass(objects[4].toString());
+            list.add(userInfoDTO);
+        }
+        pageDTO.setContents(list);
+        pageDTO.setTotalElements(findpage.getTotal());
         return pageDTO;
     }
 

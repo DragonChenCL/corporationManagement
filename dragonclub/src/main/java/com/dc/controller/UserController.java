@@ -7,12 +7,16 @@ import com.dc.entity.User;
 import com.dc.service.UserService;
 import com.dc.utils.ResponseEntity;
 import com.dc.utils.ResultEnum;
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.Tuple;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -44,6 +48,7 @@ public class UserController {
         if(memberListCondition == null){
             return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(),null);
         }
+//        PageDTO<UserInfoDTO> memberList = userService.getMemberList(memberListCondition);
         PageDTO<UserInfoDTO> memberList = userService.getMemberList(memberListCondition);
         if (memberList == null){
             return ResponseEntity.res(ResultEnum.USER_NOT_EXIST.getCode(),null);

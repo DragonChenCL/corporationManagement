@@ -1,6 +1,9 @@
 package com.dc.dto;
 
 import com.dc.entity.UserAssoc;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -8,6 +11,7 @@ import java.util.List;
 /**
  * 个人信息类
  */
+@Builder
 public class UserInfoDTO {
     private int userId;
     private String username;
@@ -28,7 +32,16 @@ public class UserInfoDTO {
     private String roles;
     private Integer collegeId;
     private Integer myclassId;
+    private String status;
     private List<UserAssocDTO> userAssocs;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public List<UserAssocDTO> getUserAssocs() {
         return userAssocs;

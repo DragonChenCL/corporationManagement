@@ -1,5 +1,6 @@
 package com.dc.entity;
 
+import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.ManyToAny;
@@ -12,10 +13,10 @@ import java.util.Objects;
 @Entity
 @DynamicUpdate
 @DynamicInsert
+@Data
 public class User {
     private Integer userId;
     private Integer authId;
-    private String associationId;
     private String username;
     private String password;
     private String phoneNumber;
@@ -32,20 +33,8 @@ public class User {
     private String sex;
     private String introduction;
     private String position;
-    private String status;
 
-    private List<Association> associationList;
 
-    @ManyToMany
-    @JoinTable(name = "user_assoc",joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "association_id"))
-    public List<Association> getAssociationList() {
-        return associationList;
-    }
-
-    public void setAssociationList(List<Association> associationList) {
-        this.associationList = associationList;
-    }
 
     @Id
     @Column(name = "user_id")
@@ -56,15 +45,6 @@ public class User {
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
-    @Basic
-    @Column(name = "status")
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     @Basic
     @Column(name = "auth_id")
@@ -74,16 +54,6 @@ public class User {
 
     public void setAuthId(Integer authId) {
         this.authId = authId;
-    }
-
-    @Basic
-    @Column(name = "association_id")
-    public String getAssociationId() {
-        return associationId;
-    }
-
-    public void setAssociationId(String associationId) {
-        this.associationId = associationId;
     }
 
     @Basic
@@ -251,7 +221,6 @@ public class User {
         User user = (User) o;
         return userId == user.userId &&
                 Objects.equals(authId, user.authId) &&
-                Objects.equals(associationId, user.associationId) &&
                 Objects.equals(username, user.username) &&
                 Objects.equals(password, user.password) &&
                 Objects.equals(phoneNumber, user.phoneNumber) &&
@@ -272,6 +241,6 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, authId, associationId, username, password, phoneNumber, email, birthday, headPortrait, enable, registeryDate, address, realName, qq, collegeId, myclassId, sex, introduction, position);
+        return Objects.hash(userId, authId,username, password, phoneNumber, email, birthday, headPortrait, enable, registeryDate, address, realName, qq, collegeId, myclassId, sex, introduction, position);
     }
 }
