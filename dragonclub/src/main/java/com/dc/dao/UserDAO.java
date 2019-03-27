@@ -1,13 +1,9 @@
 package com.dc.dao;
 
-import com.dc.dto.PageDTO;
-import com.dc.dto.UserInfoDTO;
-import com.dc.entity.*;
-import com.querydsl.core.QueryFactory;
+import com.dc.DSLEntity.*;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Predicate;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;

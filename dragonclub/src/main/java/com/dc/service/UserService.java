@@ -1,5 +1,7 @@
 package com.dc.service;
 
+import com.dc.DSLEntity.QUser;
+import com.dc.DSLEntity.QUserAssoc;
 import com.dc.dao.UserDAO;
 import com.dc.dto.MemberListCondition;
 import com.dc.dto.PageDTO;
@@ -16,15 +18,12 @@ import com.querydsl.core.types.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.criteria.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
