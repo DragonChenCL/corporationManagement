@@ -1,17 +1,19 @@
 package com.dc.dto;
 
-public class UserAssocDTO {
+import lombok.Builder;
+
+public class UserStatusDTO {
+    private Integer userId;
     private Integer assocId;
-    private String assocName;
     private String status;
     private String message;
 
-    public String getMessage() {
-        return message;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public Integer getAssocId() {
@@ -22,19 +24,19 @@ public class UserAssocDTO {
         this.assocId = assocId;
     }
 
-    public String getAssocName() {
-        return assocName;
-    }
-
-    public void setAssocName(String assocName) {
-        this.assocName = assocName;
-    }
-
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

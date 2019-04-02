@@ -7,6 +7,7 @@ public class UserAssoc {
     private Integer userId;
     private Integer associationId;
     private String status;
+    private String message;
 
     @Id
     @Column(name = "user_id")
@@ -17,6 +18,17 @@ public class UserAssoc {
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
+
+    @Basic
+    @Column(name = "message")
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     @Basic
     @Column(name = "association_id")
     public Integer getAssociationId() {

@@ -3,6 +3,7 @@ package com.dc.controller;
 import com.dc.dto.MemberListCondition;
 import com.dc.dto.PageDTO;
 import com.dc.dto.UserInfoDTO;
+import com.dc.dto.UserStatusDTO;
 import com.dc.entity.User;
 import com.dc.service.UserService;
 import com.dc.utils.ResponseEntity;
@@ -27,74 +28,87 @@ public class UserController {
 
     @ApiOperation(value = "获取用户信息")
     @GetMapping("/detail")
-    public ResponseEntity getUserInfo(@RequestParam("username") String username) throws Exception{
-        if(StringUtils.isBlank(username)){
-            return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(),null);
+    public ResponseEntity getUserInfo(@RequestParam("username") String username) throws Exception {
+        if (StringUtils.isBlank(username)) {
+            return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(), null);
         }
         UserInfoDTO user = userService.getUserInfo(username);
-        if (user == null){
-            return ResponseEntity.res(ResultEnum.USER_NOT_EXIST.getCode(),null);
+        if (user == null) {
+            return ResponseEntity.res(ResultEnum.USER_NOT_EXIST.getCode(), null);
         }
         //判断用户是否被禁用
-        if (user.getEnable() == 0){
-            return ResponseEntity.res(ResultEnum.TOKEN_IS_BLACKLIST.getCode(),null);
+        if (user.getEnable() == 0) {
+            return ResponseEntity.res(ResultEnum.TOKEN_IS_BLACKLIST.getCode(), null);
         }
-        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"获取数据成功！",user);
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(), "获取数据成功！", user);
     }
 
     @ApiOperation(value = "获取成员列表")
     @PostMapping("/memberList")
-    public ResponseEntity getMemberList(@RequestBody MemberListCondition memberListCondition) throws Exception{
-        if(memberListCondition == null){
-            return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(),null);
+    public ResponseEntity getMemberList(@RequestBody MemberListCondition memberListCondition) throws Exception {
+        if (memberListCondition == null) {
+            return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(), null);
         }
 //        PageDTO<UserInfoDTO> memberList = userService.getMemberList(memberListCondition);
         PageDTO<UserInfoDTO> memberList = userService.getMemberList(memberListCondition);
-        if (memberList == null){
-            return ResponseEntity.res(ResultEnum.USER_NOT_EXIST.getCode(),null);
+        if (memberList == null) {
+            return ResponseEntity.res(ResultEnum.USER_NOT_EXIST.getCode(), null);
         }
-        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"获取数据成功！",memberList);
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(), "获取数据成功！", memberList);
     }
 
     @ApiOperation(value = "更新用户信息")
     @PostMapping("/detail")
-    public ResponseEntity updateUserInfo(@RequestBody UserInfoDTO userInfoDTO) throws Exception{
-        if(StringUtils.isBlank(userInfoDTO.toString())){
-            return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(),null);
+    public ResponseEntity updateUserInfo(@RequestBody UserInfoDTO userInfoDTO) throws Exception {
+        if (StringUtils.isBlank(userInfoDTO.toString())) {
+            return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(), null);
         }
         Boolean flag = userService.updateUserInfo(userInfoDTO);
-        if (flag == false){
-            return ResponseEntity.res(ResultEnum.FAILURE.getCode(),null);
+        if (flag == false) {
+            return ResponseEntity.res(ResultEnum.FAILURE.getCode(), null);
         }
-        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"更新用户数据成功！");
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(), "更新用户数据成功！");
     }
 
     @PostMapping("/updateHeadPortrait")
     @ApiOperation(value = "更新头像logo")
-    public ResponseEntity updateLogo(@RequestParam MultipartFile file , @RequestParam int userId , @RequestParam String headPortrait){
-        if(file == null || StringUtils.isBlank(String.valueOf(userId)) || StringUtils.isBlank(headPortrait)){
-            return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(),null);
+    public ResponseEntity updateLogo(@RequestParam MultipartFile file, @RequestParam int userId, @RequestParam String headPortrait) {
+        if (file == null || StringUtils.isBlank(String.valueOf(userId)) || StringUtils.isBlank(headPortrait)) {
+            return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(), null);
         }
-        String outPath = userService.updateLogo(file, userId ,headPortrait);
-        if (StringUtils.isBlank(outPath)){
-            return ResponseEntity.res(ResultEnum.FAILURE.getCode(),null);
+        String outPath = userService.updateLogo(file, userId, headPortrait);
+        if (StringUtils.isBlank(outPath)) {
+            return ResponseEntity.res(ResultEnum.FAILURE.getCode(), null);
         }
-        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"头像更新成功！",outPath);
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(), "头像更新成功！", outPath);
     }
 
     @DeleteMapping("/detail")
     @ApiOperation(value = "删除用户")
-    public ResponseEntity deleteUser(@RequestParam("userId") Integer userId){
-        if(userId == null || StringUtils.isBlank(String.valueOf(userId))){
-            return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(),null);
+    public ResponseEntity deleteUser(@RequestParam("userId") Integer userId) {
+        if (userId == null || StringUtils.isBlank(String.valueOf(userId))) {
+            return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(), null);
         }
         try {
             userService.deleteUserById(userId);
-            return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"删除成功！",null);
-        }catch (Exception e){
+            return ResponseEntity.res(ResultEnum.SUCCESS.getCode(), "删除成功！", null);
+        } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.res(ResultEnum.FAILURE.getCode(),"删除失败！",null);
+            return ResponseEntity.res(ResultEnum.FAILURE.getCode(), "删除失败！", null);
         }
+    }
 
+    @PostMapping("/status")
+    @ApiOperation(value = "更新用户加入社团的状态")
+    public ResponseEntity deleteUser(@RequestBody UserStatusDTO userStatusDTO) {
+        if (userStatusDTO == null) {
+            return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(), null);
+        }
+        int i = userService.updateStatus(userStatusDTO);
+        if (i == 0) {
+            return ResponseEntity.res(ResultEnum.FAILURE.getCode(), "更新失败！", null);
+        }else {
+            return ResponseEntity.res(ResultEnum.SUCCESS.getCode(), "更新成功！", null);
+        }
     }
 }

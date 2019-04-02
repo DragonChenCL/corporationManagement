@@ -3,10 +3,7 @@ package com.dc.service;
 import com.dc.DSLEntity.QUser;
 import com.dc.DSLEntity.QUserAssoc;
 import com.dc.dao.UserDAO;
-import com.dc.dto.MemberListCondition;
-import com.dc.dto.PageDTO;
-import com.dc.dto.UserAssocDTO;
-import com.dc.dto.UserInfoDTO;
+import com.dc.dto.*;
 import com.dc.entity.*;
 import com.dc.repository.*;
 import com.dc.utils.BeanUtils;
@@ -157,7 +154,7 @@ public class UserService {
         Predicate predicate = user.isNotNull().or(user.isNull());
         //执行动态条件拼装
         if (null != condition.getRealName() && !"".equals(condition.getRealName())) {
-            predicate = ExpressionUtils.and(predicate, user.realName.like("%"+condition.getRealName()+"%"));
+            predicate = ExpressionUtils.and(predicate, user.realName.like("%" + condition.getRealName() + "%"));
         }
         if (null != condition.getAssociationId() && !"".equals(String.valueOf(condition.getAssociationId()))) {
             predicate = ExpressionUtils.and(predicate, userAssoc.associationId.eq(condition.getAssociationId()));
@@ -172,7 +169,7 @@ public class UserService {
             predicate = ExpressionUtils.and(predicate, user.enable.eq(condition.getEnable()));
         }
         //管理员信息不拿出
-        ExpressionUtils.and(predicate, user.authId.notIn(2));
+        predicate = ExpressionUtils.and(predicate, user.authId.notIn(2));
         //查看是否通过审核
         predicate = ExpressionUtils.and(predicate, userAssoc.status.eq(condition.getStatus()));
         //使用queryDSL框架
@@ -198,4 +195,13 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
+    /**
+     * 用户是否通过加入社团
+     *
+     * @return
+     */
+    public int updateStatus(UserStatusDTO dto) {
+        return userAssocRepository.updateStatus(dto.getStatus(), dto.getMessage(), dto.getUserId(), dto.getAssocId());
+
+    }
 }
