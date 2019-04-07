@@ -1,13 +1,25 @@
 package com.dc.service;
 
-import com.dc.dto.EventCondition;
+import com.dc.DSLEntity.QEvent;
+import com.dc.DSLEntity.QUser;
+import com.dc.DSLEntity.QUserAssoc;
+import com.dc.DSLEntity.QUserEvent;
+import com.dc.dao.EventDAO;
+import com.dc.dto.*;
 import com.dc.entity.Event;
+import com.dc.entity.UserEvent;
 import com.dc.repository.EventRepository;
+import com.dc.repository.UserEventRepository;
+import com.dc.utils.BeanUtils;
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.ExpressionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +28,18 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class EventService {
+
     @Autowired
     private EventRepository eventRepository;
+    @Autowired
+    private EventDAO eventDAO;
+    @Autowired
+    private UserEventRepository userEventRepository;
 
     public Page<Event> findEvents(EventCondition condition) {
         Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize());
@@ -36,9 +54,90 @@ public class EventService {
                 if (StringUtils.isNotBlank(condition.getEventName())) {
                     list.add(builder.like(root.get("eventName").as(String.class), "%" + condition.getEventName() + "%"));
                 }
+                if (condition.getStartDate() != null) {
+                    list.add(builder.like(root.get("startDate").as(String.class), "%" + condition.getStartDate() + "%"));
+                }
+                if (StringUtils.isNotBlank(condition.getStatus())) {
+                    list.add(builder.equal(root.get("status").as(String.class), condition.getStatus()));
+                }
+                list.add(builder.equal(root.get("associationId").as(Integer.class), condition.getAssocId()));
                 return builder.and(list.toArray(new Predicate[0]));
             }
         };
-        return eventRepository.findAll(pageable,specification);
+        return eventRepository.findAll(specification, pageable);
     }
+
+    /**
+     * 社长申请活动
+     *
+     * @param event
+     * @return
+     */
+    public Event applyEvent(Event event) {
+        event.setStatus("待审核");
+        return eventRepository.save(event);
+    }
+
+    /**
+     * 获取申请活动的成员列表
+     *
+     * @param condition
+     * @return
+     */
+    public PageDTO<UserApplyDTO> geteUserApply(MemberListCondition condition) {
+        //CurrentPage从0开始
+        Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize(), Sort.Direction.ASC, "userId");
+
+        QEvent event = QEvent.event;
+        QUser user = QUser.user;
+        QUserEvent userEvent = QUserEvent.userEvent;
+
+        //初始化组装条件(类似where 1=1)
+        com.querydsl.core.types.Predicate predicate = user.isNotNull().or(user.isNull());
+        //执行动态条件拼装
+        if (null != condition.getAssociationId()) {
+            predicate = ExpressionUtils.and(predicate, event.associationId.eq(condition.getAssociationId()));
+        }
+        if (null != condition.getStartDate() && !"".equals(condition.getStartDate())) {
+            predicate = ExpressionUtils.and(predicate, event.startDate.like("%" + condition.getStartDate() + "%"));
+        }
+        if (null != condition.getEventName() && !"".equals(condition.getEventName())) {
+            predicate = ExpressionUtils.and(predicate, event.eventName.like("%" + condition.getEventName() + "%"));
+        }
+        if (null != condition.getStatus() && !"".equals(condition.getStatus())) {
+            predicate = ExpressionUtils.and(predicate, userEvent.status.eq(condition.getStatus()));
+        }
+        //使用queryDSL框架
+        PageDTO<UserApplyDTO> pageDTO = new PageDTO<UserApplyDTO>();
+        QueryResults<Tuple> findpage = eventDAO.findpage(predicate, pageable);
+        List<UserApplyDTO> list = new ArrayList<>();
+        for (Tuple result : findpage.getResults()) {
+            UserApplyDTO userApplyDTO = UserApplyDTO.builder().build();
+            //这个数组得到就是查询出的每一个属性（或者类）的集合
+            Object[] objects = result.toArray();
+            BeanUtils.copyPropertiesExcludeNull(objects[0], userApplyDTO);
+            userApplyDTO.setEventName(objects[1].toString());
+            userApplyDTO.setCollege(objects[2].toString());
+            userApplyDTO.setMyClass(objects[3].toString());
+            userApplyDTO.setStatus(objects[4].toString());
+            userApplyDTO.setStartDate(objects[5].toString());
+            userApplyDTO.setId(Integer.valueOf(objects[6].toString()));
+            userApplyDTO.setEventId(Integer.valueOf(objects[7].toString()));
+            userApplyDTO.setEventAddress(objects[8].toString());
+            list.add(userApplyDTO);
+        }
+        pageDTO.setContents(list);
+        pageDTO.setTotalElements(findpage.getTotal());
+        return pageDTO;
+    }
+
+    /**
+     * 更新用户参加活动信息
+     * @param userEvent
+     * @return
+     */
+    public UserEvent updateUserEvent(UserEvent userEvent){
+        return userEventRepository.save(userEvent);
+    }
+
 }

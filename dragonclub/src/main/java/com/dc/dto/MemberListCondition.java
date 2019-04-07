@@ -14,6 +14,24 @@ public class MemberListCondition {
     private Integer currentPage;
     private Integer pageSize;
     private String status;
+    private String startDate;
+    private String eventName;
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
 
     public String getStatus() {
         return status;

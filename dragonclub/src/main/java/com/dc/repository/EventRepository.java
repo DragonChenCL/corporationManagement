@@ -10,5 +10,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface EventRepository extends JpaRepository<Event,Integer> {
 
 
-    public Page<Event> findAll(Pageable pageable, Specification<Event> specification);
+    Page<Event> findAll(Specification<Event> specification, Pageable pageable);
 }

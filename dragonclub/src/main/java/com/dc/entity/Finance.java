@@ -4,17 +4,16 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
 public class Finance {
     private int financeId;
     private Integer associationId;
-    private Timestamp startDate;
-    private String surplus;
+    private String startDate;
+    private String type;
     private String reason;
-    private String money;
+    private Integer money;
 
     @Id
     @Column(name = "finance_id")
@@ -38,22 +37,22 @@ public class Finance {
 
     @Basic
     @Column(name = "start_date")
-    public Timestamp getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Timestamp startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
     @Basic
-    @Column(name = "surplus")
-    public String getSurplus() {
-        return surplus;
+    @Column(name = "type")
+    public String getType() {
+        return type;
     }
 
-    public void setSurplus(String surplus) {
-        this.surplus = surplus;
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Basic
@@ -68,11 +67,11 @@ public class Finance {
 
     @Basic
     @Column(name = "money")
-    public String getMoney() {
+    public Integer getMoney() {
         return money;
     }
 
-    public void setMoney(String money) {
+    public void setMoney(Integer money) {
         this.money = money;
     }
 
@@ -84,13 +83,13 @@ public class Finance {
         return financeId == finance.financeId &&
                 Objects.equals(associationId, finance.associationId) &&
                 Objects.equals(startDate, finance.startDate) &&
-                Objects.equals(surplus, finance.surplus) &&
+                Objects.equals(type, finance.type) &&
                 Objects.equals(reason, finance.reason) &&
                 Objects.equals(money, finance.money);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(financeId, associationId, startDate, surplus, reason, money);
+        return Objects.hash(financeId, associationId, startDate, type, reason, money);
     }
 }

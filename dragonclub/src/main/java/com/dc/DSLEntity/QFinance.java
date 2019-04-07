@@ -27,13 +27,13 @@ public class QFinance extends EntityPathBase<Finance> {
 
     public final NumberPath<Integer> financeId = createNumber("financeId", Integer.class);
 
-    public final StringPath money = createString("money");
+    public final NumberPath<Integer> money = createNumber("money",Integer.class);
 
     public final StringPath reason = createString("reason");
 
-    public final DateTimePath<java.sql.Timestamp> startDate = createDateTime("startDate", java.sql.Timestamp.class);
+    public final StringPath startDate = createString("startDate");
 
-    public final StringPath surplus = createString("surplus");
+    public final StringPath type = createString("type");
 
     public QFinance(String variable) {
         super(Finance.class, forVariable(variable));

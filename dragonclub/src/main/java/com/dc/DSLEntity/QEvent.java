@@ -31,7 +31,7 @@ public class QEvent extends EntityPathBase<Event> {
 
     public final StringPath content = createString("content");
 
-    public final DateTimePath<java.sql.Timestamp> endDate = createDateTime("endDate", java.sql.Timestamp.class);
+    public final StringPath endDate = createString("endDate");
 
     public final StringPath enentImg = createString("enentImg");
 
@@ -45,7 +45,7 @@ public class QEvent extends EntityPathBase<Event> {
 
     public final StringPath responsiblePerson = createString("responsiblePerson");
 
-    public final DateTimePath<java.sql.Timestamp> startDate = createDateTime("startDate", java.sql.Timestamp.class);
+    public final StringPath startDate = createString("startDate");
 
     public final StringPath status = createString("status");
 

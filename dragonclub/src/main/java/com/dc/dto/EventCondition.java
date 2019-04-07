@@ -6,9 +6,10 @@ import java.util.Date;
 
 @Data
 public class EventCondition {
+    private Integer assocId;
     private Integer currentPage;
     private Integer pageSize;
     private String eventName;
-    private Date startDate;
+    private String startDate;
     private String status;
 }
