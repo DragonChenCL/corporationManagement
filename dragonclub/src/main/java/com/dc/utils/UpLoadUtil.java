@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class UpLoadUtil {
 
-    public static String upload(MultipartFile file, int id , String address , String filePath) throws IOException{
+    public static String upload(MultipartFile file, String address , String filePath) throws IOException{
 
         String fileRealName = file.getOriginalFilename();
         //后缀名 .jpg等

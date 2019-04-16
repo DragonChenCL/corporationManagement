@@ -1,24 +1,31 @@
 package com.dc.service;
 
 import com.dc.dto.AssociationInfoDTO;
-import com.dc.dto.UserInfoDTO;
+import com.dc.dto.AssociationSearchDTO;
+import com.dc.dto.PageDTO;
 import com.dc.entity.Association;
 import com.dc.entity.Category;
-import com.dc.entity.User;
 import com.dc.repository.AssociationRepository;
 import com.dc.repository.CategoryRepository;
+import com.dc.utils.BeanUtils;
 import com.dc.utils.UpLoadUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,6 +42,39 @@ public class AssociationService {
     private String logoUrl;
 
 
+    public PageDTO<AssociationInfoDTO> findAssociationList(AssociationSearchDTO dto){
+        Pageable pageable = PageRequest.of(dto.getCurrentPage() - 1,dto.getPageSize());
+        Specification<Association> specification = new Specification<Association>() {
+            @Override
+            public Predicate toPredicate(Root<Association> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+                List<Predicate> list = new ArrayList<>();
+                if (StringUtils.isNotBlank(dto.getAssName())) {
+                    list.add(builder.like(root.get("assName").as(String.class), "%" + dto.getAssName() + "%"));
+                }
+                if (dto.getCreatedDate() != null) {
+                    list.add(builder.like(root.get("createdDate").as(String.class), "%" + dto.getCreatedDate() + "%"));
+                }
+                if (dto.getCategoryId() != null) {
+                    list.add(builder.equal(root.get("categoryId").as(String.class), dto.getCategoryId()));
+                }
+                if (StringUtils.isNotBlank(dto.getStatus())) {
+                    list.add(builder.equal(root.get("status").as(String.class), dto.getStatus()));
+                }
+                return builder.and(list.toArray(new Predicate[0]));
+            }
+        };
+        Page<Association> all = associationRepository.findAll(specification, pageable);
+        PageDTO<AssociationInfoDTO> associationInfoDTOPageDTO = new PageDTO<AssociationInfoDTO>();
+        BeanUtils.copyPropertiesExcludeNull(all,associationInfoDTOPageDTO);
+        List<AssociationInfoDTO> list = new ArrayList<AssociationInfoDTO>();
+        for (Association association : all.getContent()) {
+            AssociationInfoDTO associationInfoDTO = getAssociationInfo(association.getAssociationId());
+            BeanUtils.copyPropertiesExcludeNull(association,associationInfoDTO);
+            list.add(associationInfoDTO);
+        }
+        associationInfoDTOPageDTO.setContents(list);
+        return associationInfoDTOPageDTO;
+    }
     /**
      * 获取社团信息
      */
@@ -42,13 +82,13 @@ public class AssociationService {
         AssociationInfoDTO associationInfoDTO = new AssociationInfoDTO();
         Association association = associationRepository.findAssociationByAssociationId(id);
         if (association != null){
-            BeanUtils.copyProperties(association,associationInfoDTO);
+            BeanUtils.copyPropertiesExcludeNull(association, associationInfoDTO);
             //将荣誉和精彩瞬间拆分成list返回(注意是英文符号的;)
-            if (association.getHonor() != null && association.getHonor().equals("")){
+            if (association.getHonor() != null && !association.getHonor().equals("")){
                 List<String> honor = Arrays.asList(association.getHonor().split(";"));
                 associationInfoDTO.setHonors(honor);
             }
-            if (association.getMomentImg() != null && association.getMomentImg().equals("")){
+            if (association.getMomentImg() != null && !association.getMomentImg().equals("")){
                 List<String> moment = Arrays.asList(association.getMomentImg().split(";"));
                 associationInfoDTO.setMomentImgs(moment);
             }
@@ -69,7 +109,7 @@ public class AssociationService {
         String outPath = "";
 
         try {
-            outPath = UpLoadUtil.upload(file,assocId,logo,logoUrl);
+            outPath = UpLoadUtil.upload(file,logo,logoUrl);
             associationRepository.updateLogo(outPath, assocId);
         } catch (IOException e) {
             e.printStackTrace();
@@ -92,7 +132,7 @@ public class AssociationService {
         if (StringUtils.isNotBlank(String.valueOf(associationInfoDTO.getAssociationId()))){
             association = associationRepository.findAssociationByAssociationId(associationInfoDTO.getAssociationId());
         }
-        com.dc.utils.BeanUtils.copyPropertiesExcludeNull(associationInfoDTO,association);
+        BeanUtils.copyPropertiesExcludeNull(associationInfoDTO,association);
         try {
             associationRepository.save(association);
             flag = true;
@@ -101,4 +141,26 @@ public class AssociationService {
         }
         return flag;
     }
+
+    /**
+     * 新建社团
+     * @param associationInfoDTO
+     */
+    public void createAssociation(AssociationInfoDTO associationInfoDTO){
+        Association association = new Association();
+        BeanUtils.copyPropertiesExcludeNull(associationInfoDTO,association);
+        Association save = associationRepository.save(association);
+    }
+
+    /**
+     * 解散社团
+     * @param id
+     */
+    public void disAssociation(int id){
+        Association association = associationRepository.findAssociationByAssociationId(id);
+        association.setStatus("1");
+        associationRepository.save(association);
+    }
+
+
 }

@@ -1,6 +1,10 @@
 package com.dc.repository;
 
+import com.dc.dto.AssociationInfoDTO;
 import com.dc.entity.Association;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,4 +29,6 @@ public interface AssociationRepository extends JpaRepository<Association,Integer
     @Modifying
     @Query(value = "update Association set logo = ?1 where associationId = ?2")
     int updateLogo(String path ,int assocId);
+
+    public Page<Association> findAll(Specification<Association> specification , Pageable pageable);
 }

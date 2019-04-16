@@ -33,7 +33,9 @@ public class QNews extends EntityPathBase<News> {
 
     public final StringPath newsTitle = createString("newsTitle");
 
-    public final DateTimePath<java.sql.Timestamp> publishDate = createDateTime("publishDate", java.sql.Timestamp.class);
+    public final StringPath publishDate = createString("publishDate");
+
+    public final StringPath author = createString("author");
 
     public QNews(String variable) {
         super(News.class, forVariable(variable));

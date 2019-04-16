@@ -9,7 +9,7 @@ public class AssociationInfoDTO {
     private String assName;
     private String founder;
     private String responsiblePerson;
-    private Timestamp createdDate;
+    private String createdDate;
     private String status;
     private String description;
     private String phoneNumber;
@@ -59,11 +59,11 @@ public class AssociationInfoDTO {
         this.responsiblePerson = responsiblePerson;
     }
 
-    public Timestamp getCreatedDate() {
+    public String getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Timestamp createdDate) {
+    public void setCreatedDate(String createdDate) {
         this.createdDate = createdDate;
     }
 

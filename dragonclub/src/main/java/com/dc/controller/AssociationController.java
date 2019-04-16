@@ -1,6 +1,8 @@
 package com.dc.controller;
 
 import com.dc.dto.AssociationInfoDTO;
+import com.dc.dto.AssociationSearchDTO;
+import com.dc.dto.PageDTO;
 import com.dc.dto.UserInfoDTO;
 import com.dc.service.AssociationService;
 import com.dc.utils.ResponseEntity;
@@ -8,6 +10,7 @@ import com.dc.utils.ResultEnum;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,5 +62,22 @@ public class AssociationController {
             return ResponseEntity.res(ResultEnum.FAILURE.getCode(),null);
         }
         return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"更新社团信息成功！");
+    }
+
+    @ApiOperation(value = "获取所有社团信息")
+    @PostMapping("/list")
+    public ResponseEntity findAssociationList(@RequestBody AssociationSearchDTO associationInfoDTO) {
+        PageDTO<AssociationInfoDTO> associationList = associationService.findAssociationList(associationInfoDTO);
+        if (associationList == null){
+            return ResponseEntity.res(ResultEnum.FAILURE.getCode(),null);
+        }
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),associationList);
+    }
+
+    @ApiOperation(value = "解散社团")
+    @GetMapping("/dis")
+    public ResponseEntity disAssociation(@RequestParam("id") Integer id) {
+        associationService.disAssociation(id);
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),null);
     }
 }

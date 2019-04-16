@@ -13,8 +13,9 @@ public class News {
     private Integer associationId;
     private String newsTitle;
     private String newsContent;
-    private Timestamp publishDate;
+    private String publishDate;
     private String newsImg;
+    private String author;
 
     @Id
     @Column(name = "news_id")
@@ -24,6 +25,16 @@ public class News {
 
     public void setNewsId(int newsId) {
         this.newsId = newsId;
+    }
+
+    @Basic
+    @Column(name = "author")
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     @Basic
@@ -58,11 +69,11 @@ public class News {
 
     @Basic
     @Column(name = "publish_date")
-    public Timestamp getPublishDate() {
+    public String getPublishDate() {
         return publishDate;
     }
 
-    public void setPublishDate(Timestamp publishDate) {
+    public void setPublishDate(String publishDate) {
         this.publishDate = publishDate;
     }
 

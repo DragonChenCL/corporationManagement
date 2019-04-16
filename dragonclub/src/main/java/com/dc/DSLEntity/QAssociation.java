@@ -31,7 +31,7 @@ public class QAssociation extends EntityPathBase<Association> {
 
     public final NumberPath<Integer> categoryId = createNumber("categoryId", Integer.class);
 
-    public final DateTimePath<java.sql.Timestamp> createdDate = createDateTime("createdDate", java.sql.Timestamp.class);
+    public final StringPath createdDate = createString("createdDate");
 
     public final StringPath description = createString("description");
 

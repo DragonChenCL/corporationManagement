@@ -135,7 +135,7 @@ public class UserService {
         String outPath = "";
 
         try {
-            outPath = UpLoadUtil.upload(file, userId, avatar, headPortraitUrl);
+            outPath = UpLoadUtil.upload(file, avatar, headPortraitUrl);
             userRepository.updateheadPortrait(outPath, userId);
         } catch (IOException e) {
             e.printStackTrace();
