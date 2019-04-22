@@ -1,6 +1,7 @@
 package com.dc.dao;
 
 import com.dc.DSLEntity.*;
+import com.querydsl.core.QueryFactory;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Predicate;
@@ -42,4 +43,28 @@ public class EventDAO {
 
         return pageDTO;
     }
+
+    /**
+     * 查询所有活动列表
+     * @param predicate
+     * @param pageable
+     * @return
+     */
+    public QueryResults<Tuple> findEvents(Predicate predicate, Pageable pageable){
+        QAssociation association = QAssociation.association;
+        QEvent event =QEvent.event;
+
+        QueryResults<Tuple> pageDTO = queryFactory
+                .select(event,association.assName)
+                .from(event)
+                .leftJoin(association)
+                .on(event.associationId.eq(association.associationId))
+                .where(predicate)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        return pageDTO;
+    }
+
 }

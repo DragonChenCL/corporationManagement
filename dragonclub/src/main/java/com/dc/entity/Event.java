@@ -1,9 +1,6 @@
 package com.dc.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -22,6 +19,27 @@ public class Event {
     private String undertakingCompany;
     private String actualFunds;
     private String enentImg;
+    private String assName;
+    private String message;
+
+    @Basic
+    @Column(name = "message")
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    @Transient
+    public String getAssName() {
+        return assName;
+    }
+
+    public void setAssName(String assName) {
+        this.assName = assName;
+    }
 
     @Id
     @Column(name = "event_id")

@@ -3,7 +3,6 @@ package com.dc.DSLEntity;
 import com.dc.entity.News;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.PathMetadata;
-import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringPath;
@@ -25,6 +24,8 @@ public class QNews extends EntityPathBase<News> {
 
     public final NumberPath<Integer> associationId = createNumber("associationId", Integer.class);
 
+    public final StringPath author = createString("author");
+
     public final StringPath newsContent = createString("newsContent");
 
     public final NumberPath<Integer> newsId = createNumber("newsId", Integer.class);
@@ -34,8 +35,6 @@ public class QNews extends EntityPathBase<News> {
     public final StringPath newsTitle = createString("newsTitle");
 
     public final StringPath publishDate = createString("publishDate");
-
-    public final StringPath author = createString("author");
 
     public QNews(String variable) {
         super(News.class, forVariable(variable));

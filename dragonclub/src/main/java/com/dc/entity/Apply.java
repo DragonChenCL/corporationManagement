@@ -4,7 +4,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -12,7 +12,7 @@ public class Apply {
     private int applyId;
     private Integer userId;
     private Integer eventId;
-    private Timestamp applyDate;
+    private String applyDate;
     private String status;
 
     @Id
@@ -47,11 +47,11 @@ public class Apply {
 
     @Basic
     @Column(name = "apply_date")
-    public Timestamp getApplyDate() {
+    public String getApplyDate() {
         return applyDate;
     }
 
-    public void setApplyDate(Timestamp applyDate) {
+    public void setApplyDate(String applyDate) {
         this.applyDate = applyDate;
     }
 

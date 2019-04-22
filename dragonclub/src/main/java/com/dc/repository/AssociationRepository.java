@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 public interface AssociationRepository extends JpaRepository<Association,Integer> {
     /**
@@ -31,4 +32,9 @@ public interface AssociationRepository extends JpaRepository<Association,Integer
     int updateLogo(String path ,int assocId);
 
     public Page<Association> findAll(Specification<Association> specification , Pageable pageable);
+
+    public List<Association> findAssociationsByStatus(String status);
+
+    public List<Association> findAssociationsByCategoryId(int categoryId);
+
 }

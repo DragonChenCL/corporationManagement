@@ -10,4 +10,6 @@ public interface MyclassRepository extends JpaRepository<Myclass,Integer> {
     public List<Myclass> findMyclassByCollegeId(Integer collegeId);
 
     public Myclass findMyclassByClassId(Integer myclassId);
+
+    public Myclass findMyclassByClassName(String className);
 }

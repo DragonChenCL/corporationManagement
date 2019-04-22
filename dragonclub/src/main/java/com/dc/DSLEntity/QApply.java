@@ -23,7 +23,7 @@ public class QApply extends EntityPathBase<Apply> {
 
     public static final QApply apply = new QApply("apply");
 
-    public final DateTimePath<java.sql.Timestamp> applyDate = createDateTime("applyDate", java.sql.Timestamp.class);
+    public final StringPath applyDate = createString("applyDate");
 
     public final NumberPath<Integer> applyId = createNumber("applyId", Integer.class);
 

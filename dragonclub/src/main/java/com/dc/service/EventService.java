@@ -1,9 +1,6 @@
 package com.dc.service;
 
-import com.dc.DSLEntity.QEvent;
-import com.dc.DSLEntity.QUser;
-import com.dc.DSLEntity.QUserAssoc;
-import com.dc.DSLEntity.QUserEvent;
+import com.dc.DSLEntity.*;
 import com.dc.dao.EventDAO;
 import com.dc.dto.*;
 import com.dc.entity.Event;
@@ -14,6 +11,7 @@ import com.dc.utils.BeanUtils;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
+import com.sun.org.apache.regexp.internal.REUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,7 +26,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -41,6 +38,11 @@ public class EventService {
     @Autowired
     private UserEventRepository userEventRepository;
 
+    /**
+     * 获取活动列表
+     * @param condition
+     * @return
+     */
     public Page<Event> findEvents(EventCondition condition) {
         Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize());
         //封装条件查询对象Specification
@@ -68,6 +70,48 @@ public class EventService {
     }
 
     /**
+     * 社团管理员查看活动
+     * @param condition
+     * @return
+     */
+    public PageDTO<Event> findEventsBySys(EventCondition condition) {
+        Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize());
+
+        QEvent event = QEvent.event;
+        QAssociation association = QAssociation.association;
+
+        //初始化组装条件(类似where 1=1)
+        com.querydsl.core.types.Predicate predicate = event.isNotNull().or(event.isNull());
+
+        if (StringUtils.isNotBlank(condition.getEventName())) {
+            predicate = ExpressionUtils.and(predicate, event.eventName.like("%" + condition.getEventName() + "%"));
+        }
+        if (condition.getStartDate() != null) {
+            predicate = ExpressionUtils.and(predicate, event.startDate.like("%" + condition.getStartDate() + "%"));
+        }
+        if (condition.getAssocId() != null) {
+            predicate = ExpressionUtils.and(predicate, event.associationId.eq(condition.getAssocId()));
+        }
+        if (StringUtils.isNotBlank(condition.getStatus())) {
+            predicate = ExpressionUtils.and(predicate, event.status.eq(condition.getStatus()));
+        }
+        PageDTO<Event> pageDTO = new PageDTO<Event>();
+        QueryResults<Tuple> findEvents = eventDAO.findEvents(predicate, pageable);
+        List<Event> list = new ArrayList<Event>();
+        for (Tuple result : findEvents.getResults()) {
+            Event event1 = new Event();
+            //这个数组得到就是查询出的每一个属性（或者类）的集合
+            Object[] objects = result.toArray();
+            BeanUtils.copyPropertiesExcludeNull(objects[0], event1);
+            event1.setAssName(objects[1].toString());
+            list.add(event1);
+        }
+        pageDTO.setContents(list);
+        pageDTO.setTotalElements(findEvents.getTotal());
+        return pageDTO;
+    }
+
+    /**
      * 社长申请活动
      *
      * @param event
@@ -76,6 +120,14 @@ public class EventService {
     public Event applyEvent(Event event) {
         event.setStatus("待审核");
         return eventRepository.save(event);
+    }
+
+    /**
+     * 活动状态更新
+     * @return
+     */
+    public int eventStatus(EventStatusDTO dto){
+        return eventRepository.updateStatus(dto.getStatus(),dto.getMessage(),dto.getEventId());
     }
 
     /**

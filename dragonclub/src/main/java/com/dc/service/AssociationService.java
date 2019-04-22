@@ -149,6 +149,8 @@ public class AssociationService {
     public void createAssociation(AssociationInfoDTO associationInfoDTO){
         Association association = new Association();
         BeanUtils.copyPropertiesExcludeNull(associationInfoDTO,association);
+        association.setStatus("1");
+        association.setLogo("/logo/默认图片.jpg");
         Association save = associationRepository.save(association);
     }
 
@@ -158,8 +160,17 @@ public class AssociationService {
      */
     public void disAssociation(int id){
         Association association = associationRepository.findAssociationByAssociationId(id);
-        association.setStatus("1");
+        association.setStatus("0");
         associationRepository.save(association);
+    }
+
+    /**
+     * 获取所有社团
+     * @return
+     */
+    public List<Association> findAssociations(){
+        List<Association> associationsByStatus = associationRepository.findAssociationsByStatus("1");
+        return associationsByStatus;
     }
 
 

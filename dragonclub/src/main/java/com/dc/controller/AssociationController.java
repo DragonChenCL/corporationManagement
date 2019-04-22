@@ -4,6 +4,7 @@ import com.dc.dto.AssociationInfoDTO;
 import com.dc.dto.AssociationSearchDTO;
 import com.dc.dto.PageDTO;
 import com.dc.dto.UserInfoDTO;
+import com.dc.entity.Association;
 import com.dc.service.AssociationService;
 import com.dc.utils.ResponseEntity;
 import com.dc.utils.ResultEnum;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/assoc")
@@ -79,5 +82,19 @@ public class AssociationController {
     public ResponseEntity disAssociation(@RequestParam("id") Integer id) {
         associationService.disAssociation(id);
         return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),null);
+    }
+
+    @ApiOperation(value = "新增社团")
+    @PostMapping("/create")
+    public ResponseEntity createAssociation(@RequestBody AssociationInfoDTO dto) {
+        associationService.createAssociation(dto);
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),null);
+    }
+
+    @ApiOperation(value = "获取所有社团信息")
+    @GetMapping("/all")
+    public ResponseEntity createAssociation() {
+        List<Association> associations = associationService.findAssociations();
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"获取所有社团成功",associations);
     }
 }

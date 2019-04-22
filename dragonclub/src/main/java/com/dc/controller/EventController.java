@@ -1,9 +1,6 @@
 package com.dc.controller;
 
-import com.dc.dto.EventCondition;
-import com.dc.dto.MemberListCondition;
-import com.dc.dto.PageDTO;
-import com.dc.dto.UserApplyDTO;
+import com.dc.dto.*;
 import com.dc.entity.Event;
 import com.dc.entity.Myclass;
 import com.dc.entity.UserEvent;
@@ -17,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.dc.DSLEntity.QUserEvent.userEvent;
+
 @RestController
 @RequestMapping("/event")
 public class EventController {
@@ -24,7 +23,7 @@ public class EventController {
     @Autowired
     private EventService eventService;
 
-    @ApiOperation(value = "获取活动信息")
+    @ApiOperation(value = "社长获取活动信息")
     @PostMapping("/details")
     public ResponseEntity getEvents(@RequestBody EventCondition condition){
         Page<Event> events = eventService.findEvents(condition);
@@ -32,6 +31,16 @@ public class EventController {
             return ResponseEntity.res(ResultEnum.FAILURE.getCode(),"获取活动信息失败",null);
         }
         return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"获取活动信息成功！",events);
+    }
+
+    @ApiOperation(value = "管理员获取活动信息")
+    @PostMapping("/detailsBySys")
+    public ResponseEntity findEventsBySys(@RequestBody EventCondition condition){
+        PageDTO<Event> eventsBySys = eventService.findEventsBySys(condition);
+        if (eventsBySys == null){
+            return ResponseEntity.res(ResultEnum.FAILURE.getCode(),"获取活动信息失败",null);
+        }
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"获取活动信息成功！",eventsBySys);
     }
 
     @ApiOperation(value = "社长申请活动")
@@ -62,5 +71,15 @@ public class EventController {
             return ResponseEntity.res(ResultEnum.FAILURE.getCode(),"更新社员申请活动状态失败",null);
         }
         return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"更新社员申请活动状态成功！",userEvent);
+    }
+
+    @ApiOperation(value = "更新活动状态")
+    @PostMapping("/eventStatus")
+    public ResponseEntity userEventStatus(@RequestBody EventStatusDTO dto){
+        int i = eventService.eventStatus(dto);
+        if (i == 0){
+            return ResponseEntity.res(ResultEnum.FAILURE.getCode(),"更新活动状态失败",null);
+        }
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"更新活动状态状态成功！",null);
     }
 }

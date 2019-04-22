@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 public interface UserRepository extends JpaRepository<User,Integer> {
     /**
@@ -45,4 +46,7 @@ public interface UserRepository extends JpaRepository<User,Integer> {
      */
     Page<User> findAll(Specification<User> userSpecification, Pageable pageable);
 
+    public List<User> findUsersByCollegeId(int collegeId);
+
+    public List<User> findUsersByMyclassId(int myclassId);
 }

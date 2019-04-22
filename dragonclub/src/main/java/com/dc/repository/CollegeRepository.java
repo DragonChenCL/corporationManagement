@@ -7,4 +7,5 @@ public interface CollegeRepository extends JpaRepository<College,Integer> {
 
     public College findCollegeByCollegeId(Integer id);
 
+    public College findCollegeByCollegeName(String collegeName);
 }

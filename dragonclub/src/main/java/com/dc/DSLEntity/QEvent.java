@@ -3,7 +3,6 @@ package com.dc.DSLEntity;
 import com.dc.entity.Event;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.PathMetadata;
-import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringPath;
@@ -42,6 +41,8 @@ public class QEvent extends EntityPathBase<Event> {
     public final StringPath exceptFunds = createString("exceptFunds");
 
     public final StringPath level = createString("level");
+
+    public final StringPath message = createString("message");
 
     public final StringPath responsiblePerson = createString("responsiblePerson");
 
