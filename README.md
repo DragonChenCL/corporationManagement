@@ -1,4 +1,4 @@
-# 此项目为高校社团管理系统 （龙团管理系统）
+
    项目采用前后端分离的方式，前端采取了vue的一个集成框架[vue-element-admin](https://panjiachen.github.io/vue-element-admin-site/zh/guide/#%E5%8A%9F%E8%83%BD)，暂无前端,后端采用spring boot框架
 ## 项目主要技术
 ### 后端使用技术
@@ -10,4 +10,3 @@
 * 鉴权采用spring security + jwt（后期将重构加上redis，实现token可控）
 * .....(待增加)
 ## 项目主要功能
-项目主要为了实现高效社团管理系统，目前功能模板暂时没有很完整，日后补充
