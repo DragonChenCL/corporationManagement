@@ -1,6 +1,7 @@
 package com.dc.controller;
 
 import com.dc.dto.NewsCondition;
+import com.dc.dto.NewsDTO;
 import com.dc.dto.UserInfoDTO;
 import com.dc.entity.News;
 import com.dc.service.NewsService;
@@ -64,5 +65,15 @@ public class NewsController {
             return ResponseEntity.res(ResultEnum.FAILURE.getCode(), "查询新闻列表失败", null);
         }
         return ResponseEntity.res(ResultEnum.SUCCESS.getCode(), "查询新闻列表成功！", newsList);
+    }
+
+    @ApiOperation(value = "根据id获取新闻详情")
+    @GetMapping("/detail")
+    public ResponseEntity getNewsById(@RequestParam Integer id) {
+        NewsDTO newsById = newsService.getNewsById(id);
+        if (newsById == null) {
+            return ResponseEntity.res(ResultEnum.FAILURE.getCode(), "查询新闻详情失败", null);
+        }
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(), "查询新闻详情成功！", newsById);
     }
 }

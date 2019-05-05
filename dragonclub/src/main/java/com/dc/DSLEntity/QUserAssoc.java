@@ -22,6 +22,8 @@ public class QUserAssoc extends EntityPathBase<UserAssoc> {
 
     public static final QUserAssoc userAssoc = new QUserAssoc("userAssoc");
 
+    public final NumberPath<Integer> id = createNumber("id", Integer.class);
+
     public final NumberPath<Integer> associationId = createNumber("associationId", Integer.class);
 
     public final StringPath message = createString("message");

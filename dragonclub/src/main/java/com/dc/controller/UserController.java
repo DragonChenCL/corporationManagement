@@ -83,14 +83,14 @@ public class UserController {
         return ResponseEntity.res(ResultEnum.SUCCESS.getCode(), "头像更新成功！", outPath);
     }
 
-    @DeleteMapping("/detail")
-    @ApiOperation(value = "删除用户")
-    public ResponseEntity deleteUser(@RequestParam("userId") Integer userId) {
-        if (userId == null || StringUtils.isBlank(String.valueOf(userId))) {
+    @DeleteMapping("/delete")
+    @ApiOperation(value = "用户退出社团")
+    public ResponseEntity deleteUser(@RequestParam("userId") Integer userId , @RequestParam("assocId") Integer assocId) {
+        if (userId == null || assocId == null) {
             return ResponseEntity.res(ResultEnum.MISSING_PARAM.getCode(), null);
         }
         try {
-            userService.deleteUserById(userId);
+            userService.deleteUser(userId,assocId);
             return ResponseEntity.res(ResultEnum.SUCCESS.getCode(), "删除成功！", null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,5 +110,19 @@ public class UserController {
         }else {
             return ResponseEntity.res(ResultEnum.SUCCESS.getCode(), "更新成功！", null);
         }
+    }
+
+    @PostMapping("/apply")
+    @ApiOperation(value = "用户申请加入社团")
+    public ResponseEntity applyAssoc(@RequestParam("userId") Integer userId ,@RequestParam("assocId") Integer assocId) {
+        String message = userService.applyAssoc(userId, assocId);
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(), message, null);
+    }
+
+    @PostMapping("/applyEvent")
+    @ApiOperation(value = "用户申请加入活动")
+    public ResponseEntity applyEvent(@RequestParam("userId") Integer userId ,@RequestParam("eventId") Integer eventId) {
+        String message = userService.applyEvent(userId, eventId);
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(), message, null);
     }
 }

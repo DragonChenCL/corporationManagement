@@ -18,4 +18,6 @@ public interface NewsRepository extends JpaRepository<News,Integer> {
     @Modifying
     @Query(value = "update News set newsImg = ?1 where newsId = ?2")
     int updateNewsImg(String path , int newsId);
+
+    public News findNewsByNewsId(Integer id);
 }

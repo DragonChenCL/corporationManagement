@@ -3,8 +3,10 @@ package com.dc.service;
 import com.dc.DSLEntity.*;
 import com.dc.dao.EventDAO;
 import com.dc.dto.*;
+import com.dc.entity.Association;
 import com.dc.entity.Event;
 import com.dc.entity.UserEvent;
+import com.dc.repository.AssociationRepository;
 import com.dc.repository.EventRepository;
 import com.dc.repository.UserEventRepository;
 import com.dc.utils.BeanUtils;
@@ -37,6 +39,8 @@ public class EventService {
     private EventDAO eventDAO;
     @Autowired
     private UserEventRepository userEventRepository;
+    @Autowired
+    private AssociationRepository associationRepository;
 
     /**
      * 获取活动列表
@@ -190,6 +194,20 @@ public class EventService {
      */
     public UserEvent updateUserEvent(UserEvent userEvent){
         return userEventRepository.save(userEvent);
+    }
+
+    /**
+     * 根据id获取活动详细信息
+     * @param id
+     * @return
+     */
+    public EventDTO findEventById(Integer id){
+        Event eventByEventId = eventRepository.findEventByEventId(id);
+        EventDTO eventDTO = new EventDTO();
+        BeanUtils.copyPropertiesExcludeNull(eventByEventId,eventDTO);
+        Association association = associationRepository.findAssociationByAssociationId(eventByEventId.getAssociationId());
+        eventDTO.setAssName(association.getAssName());
+        return eventDTO;
     }
 
 }

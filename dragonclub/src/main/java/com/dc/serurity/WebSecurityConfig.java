@@ -67,6 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         ,"/swagger-resources/**"
                         ,"/v2/**"
                         ,"/druid/**"
+                        ,"/**"
                 ).permitAll()
                 .antMatchers("/avatar/**","/honor/**","/logo/**","/newsImg/**").permitAll()
                 .antMatchers(exceptUrl).permitAll()

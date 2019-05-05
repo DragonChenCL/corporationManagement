@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -40,6 +41,11 @@ public class UserService {
     private final CollegeRepository collegeRepository;
     private final UserAssocRepository userAssocRepository;
 
+    @Autowired
+    private UserEventRepository userEventRepository;
+    @Autowired
+    private EventRepository eventRepository;
+
     @Value("${imgUrl.headPortrait}")
     private String headPortraitUrl;
 
@@ -51,6 +57,44 @@ public class UserService {
         this.myclassRepository = myclassRepository;
         this.collegeRepository = collegeRepository;
         this.userAssocRepository = userAssocRepository;
+    }
+
+    /**
+     * 用户申请加入社团
+     * @param userId
+     * @param assocId
+     * @return
+     */
+    public String applyAssoc(Integer userId , Integer assocId){
+        UserAssoc userIdAndAssociationId = userAssocRepository.findUserAssocByUserIdAndAssociationId(userId, assocId);
+        if (userIdAndAssociationId != null){
+            return "已经在社团中";
+        }
+        UserAssoc userAssoc = new UserAssoc();
+        userAssoc.setUserId(userId);
+        userAssoc.setAssociationId(assocId);
+        userAssoc.setStatus("待审核");
+        userAssocRepository.save(userAssoc);
+        return "已提交申请，请等候";
+    }
+
+    /**
+     * 用户申请加入活动
+     * @param userId
+     * @param eventId
+     * @return
+     */
+    public String applyEvent(Integer userId , Integer eventId){
+        UserEvent idAndEventId = userEventRepository.findUserEventByUserIdAndEventId(userId, eventId);
+        if (idAndEventId != null){
+            return "已经报名";
+        }
+        UserEvent userEvent = new UserEvent();
+        userEvent.setUserId(userId);
+        userEvent.setEventId(eventId);
+        userEvent.setStatus("待审核");
+        userEventRepository.save(userEvent);
+        return "已提交申请，请等候";
     }
 
     /**
@@ -98,6 +142,18 @@ public class UserService {
                     userInfoDTO.setMyClass(myclass.getClassName());
                 }
             }
+
+            //获取参加的活动信息
+            List<UserEventDTO> userEventDTOs = new ArrayList<>();
+            List<UserEvent> userEvents = userEventRepository.findUserEventByUserId(userInfoDTO.getUserId());
+            for (UserEvent userEvent : userEvents) {
+                UserEventDTO userEventDTO = new UserEventDTO();
+                BeanUtils.copyPropertiesExcludeNull(userEvent,userEventDTO);
+                Event event = eventRepository.findEventByEventId(userEvent.getEventId());
+                userEventDTO.setEventName(event.getEventName());
+                userEventDTOs.add(userEventDTO);
+            }
+            userInfoDTO.setUserEvents(userEventDTOs);
         }
         return userInfoDTO;
     }
@@ -191,8 +247,9 @@ public class UserService {
         return pageDTO;
     }
 
-    public void deleteUserById(Integer userId) {
-        userRepository.deleteById(userId);
+    @Transactional
+    public void deleteUser(Integer userId , Integer assocId) {
+        userAssocRepository.deleteUserAssocByUserIdAndAssociationId(userId,assocId);
     }
 
     /**

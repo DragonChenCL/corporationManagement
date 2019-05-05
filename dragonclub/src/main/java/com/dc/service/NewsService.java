@@ -1,9 +1,13 @@
 package com.dc.service;
 
 import com.dc.dto.NewsCondition;
+import com.dc.dto.NewsDTO;
+import com.dc.entity.Association;
 import com.dc.entity.Event;
 import com.dc.entity.News;
+import com.dc.repository.AssociationRepository;
 import com.dc.repository.NewsRepository;
+import com.dc.utils.BeanUtils;
 import com.dc.utils.UpLoadUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,11 +34,14 @@ public class NewsService {
     @Autowired
     private NewsRepository newsRepository;
 
+    @Autowired
+    private AssociationRepository associationRepository;
+
     @Value("${imgUrl.newsImg}")
     private String news;
 
     public Page<News> findNewsList(NewsCondition condition) {
-        Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize());
+        Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize(), Sort.Direction.DESC,"publishDate");
         Specification<News> specification = new Specification<News>() {
             @Override
             // Root 用于获取属性字段，CriteriaQuery可以用于简单条件查询，CriteriaBuilder 用于构造复杂条件查询
@@ -47,7 +55,9 @@ public class NewsService {
                 if (StringUtils.isNotBlank(condition.getPublishDate())) {
                     list.add(builder.like(root.get("publishDate").as(String.class), "%" + condition.getPublishDate() + "%"));
                 }
-                list.add(builder.equal(root.get("associationId").as(Integer.class), condition.getAssociationId()));
+                if(condition.getAssociationId() != null){
+                    list.add(builder.equal(root.get("associationId").as(Integer.class), condition.getAssociationId()));
+                }
                 return builder.and(list.toArray(new Predicate[0]));
             }
         };
@@ -71,5 +81,19 @@ public class NewsService {
             e.printStackTrace();
         }
         return outPath;
+    }
+
+    public NewsDTO getNewsById(Integer id){
+        News news = new News();
+        news = newsRepository.findNewsByNewsId(id);
+        NewsDTO newsDTO = new NewsDTO();
+        BeanUtils.copyPropertiesExcludeNull(news,newsDTO);
+        //获取社团名称
+        Association association = associationRepository.findAssociationByAssociationId(id);
+        if (association != null){
+            newsDTO.setAssName(association.getAssName());
+
+        }
+        return newsDTO;
     }
 }

@@ -7,7 +7,7 @@ import javax.persistence.Id;
 
 @Entity
 public class UserEvent {
-    private Integer id;
+    private int id;
     private Integer userId;
     private Integer eventId;
     private String status;

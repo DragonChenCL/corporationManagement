@@ -1,6 +1,7 @@
 package com.dc.dto;
 
 import com.dc.entity.UserAssoc;
+import com.dc.entity.UserEvent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,6 +35,15 @@ public class UserInfoDTO {
     private Integer myclassId;
     private String status;
     private List<UserAssocDTO> userAssocs;
+    private List<UserEventDTO> userEvents;
+
+    public List<UserEventDTO> getUserEvents() {
+        return userEvents;
+    }
+
+    public void setUserEvents(List<UserEventDTO> userEvents) {
+        this.userEvents = userEvents;
+    }
 
     public String getStatus() {
         return status;

@@ -20,4 +20,6 @@ public interface EventRepository extends JpaRepository<Event,Integer> {
     @Modifying
     @Query(value = "update Event set status =?1 , message =?2 where eventId = ?3")
     public int updateStatus(String status,String message,Integer eventId );
+
+    Event findEventByEventId(Integer id);
 }

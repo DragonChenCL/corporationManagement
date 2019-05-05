@@ -82,4 +82,11 @@ public class EventController {
         }
         return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"更新活动状态状态成功！",null);
     }
+
+    @ApiOperation(value = "根据id获取活动详情")
+    @GetMapping("/detail")
+    public ResponseEntity userEventStatus(@RequestParam("id") Integer id){
+        EventDTO eventDTO = eventService.findEventById(id);
+        return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),eventDTO);
+    }
 }

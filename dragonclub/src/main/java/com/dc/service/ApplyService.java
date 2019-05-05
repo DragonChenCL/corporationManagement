@@ -55,6 +55,7 @@ public class ApplyService {
             StringTemplate dateFor = Expressions.stringTemplate("DATE_FORMAT({0},'%Y-%m-%d %H')", apply.applyDate);
             predicate = ExpressionUtils.and(predicate, dateFor.like("%" + condition.getApplyDate() + "%"));
         }
+        //多表查询的时候将右表eventName属性作为查询条件
         if (StringUtils.isNotBlank(condition.getEventName())) {
             predicate = ExpressionUtils.and(predicate, event.eventName.like("%" +condition.getEventName()+"%" ));
         }
@@ -64,7 +65,7 @@ public class ApplyService {
         List<ApplyDTO> list = new ArrayList<>();
         for (Tuple result : queryResults.getResults()) {
             ApplyDTO applyDTO = new ApplyDTO();
-            //这个数组得到就是查询出的每一个属性（或者类）的集合
+            //这个数组得到就是查询出的每一个属性（或者 类）的集合
             Object[] objects = result.toArray();
             BeanUtils.copyPropertiesExcludeNull(objects[0], applyDTO);
             applyDTO.setEventName(objects[1].toString());

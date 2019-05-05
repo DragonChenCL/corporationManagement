@@ -19,4 +19,8 @@ public interface UserAssocRepository extends JpaRepository<UserAssoc,Integer> {
     @Query(value = "update UserAssoc set status =?1 , message =?2 where userId = ?3 and associationId = ?4")
     public int updateStatus(String status , String message, Integer userId , Integer assocId );
 
+    public int deleteUserAssocByUserIdAndAssociationId(Integer userId, Integer assocId);
+
+    public UserAssoc findUserAssocByUserIdAndAssociationId(Integer userId , Integer assocId);
+
 }

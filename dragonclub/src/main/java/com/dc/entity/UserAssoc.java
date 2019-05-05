@@ -4,12 +4,22 @@ import javax.persistence.*;
 
 @Entity
 public class UserAssoc {
+    private int id;
     private Integer userId;
     private Integer associationId;
     private String status;
     private String message;
 
     @Id
+    @Column(name = "id")
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     @Column(name = "user_id")
     public Integer getUserId() {
         return userId;
