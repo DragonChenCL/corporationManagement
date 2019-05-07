@@ -14,9 +14,9 @@ spring:
     #druid数据源
     druid:
       username: root
-      password: 123456
+      password: 12345
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://47.100.185.39:3306/corporationmanagement?useUnicode=true&characterEncoding=utf8
+      url: jdbc:mysql://localhost:3306/corporationmanagement?useUnicode=true&characterEncoding=utf8
       initialSize: 1
       minIdle: 1
       maxActive: 5
@@ -45,3 +45,4 @@ jwt:
 imgUrl:
   logo: "D://毕业设计、//corporationManagement//dragonclub//src//main//resources//logo"
   headPortrait: "D://毕业设计、//corporationManagement//dragonclub//src//main//resources//avatar"
+  newsImg: "D://毕业设计、//corporationManagement//dragonclub//src//main//resources//newsImg"

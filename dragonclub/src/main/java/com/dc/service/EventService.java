@@ -48,7 +48,7 @@ public class EventService {
      * @return
      */
     public Page<Event> findEvents(EventCondition condition) {
-        Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize());
+        Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize(), Sort.Direction.DESC,"eventId");
         //封装条件查询对象Specification
         Specification<Event> specification = new Specification<Event>() {
             @Override
@@ -79,7 +79,7 @@ public class EventService {
      * @return
      */
     public PageDTO<Event> findEventsBySys(EventCondition condition) {
-        Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize());
+        Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize(), Sort.Direction.DESC,"eventId");
 
         QEvent event = QEvent.event;
         QAssociation association = QAssociation.association;
@@ -142,7 +142,7 @@ public class EventService {
      */
     public PageDTO<UserApplyDTO> geteUserApply(MemberListCondition condition) {
         //CurrentPage从0开始
-        Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize(), Sort.Direction.ASC, "userId");
+        Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize(), Sort.Direction.DESC, "userId");
 
         QEvent event = QEvent.event;
         QUser user = QUser.user;

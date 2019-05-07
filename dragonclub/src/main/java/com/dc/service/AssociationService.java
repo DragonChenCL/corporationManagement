@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,7 +44,7 @@ public class AssociationService {
 
 
     public PageDTO<AssociationInfoDTO> findAssociationList(AssociationSearchDTO dto){
-        Pageable pageable = PageRequest.of(dto.getCurrentPage() - 1,dto.getPageSize());
+        Pageable pageable = PageRequest.of(dto.getCurrentPage() - 1,dto.getPageSize(), Sort.Direction.DESC,"associationId");
         Specification<Association> specification = new Specification<Association>() {
             @Override
             public Predicate toPredicate(Root<Association> root, CriteriaQuery<?> query, CriteriaBuilder builder) {

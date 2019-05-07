@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public class FinanceService {
     }
 
     public Page<Finance> findAll(FinanceCondition condition) {
-        Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize());
+        Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize(), Sort.Direction.DESC,"financeId");
 
         Specification<Finance> specification = new Specification<Finance>() {
 

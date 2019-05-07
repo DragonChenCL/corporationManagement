@@ -1,9 +1,6 @@
 package com.dc.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -12,7 +9,7 @@ public class News {
     private int newsId;
     private Integer associationId;
     private String newsTitle;
-    private String newsContent;
+    private byte[] newsContent;
     private String publishDate;
     private String newsImg;
     private String author;
@@ -57,13 +54,14 @@ public class News {
         this.newsTitle = newsTitle;
     }
 
+    @Lob
     @Basic
-    @Column(name = "news_content")
-    public String getNewsContent() {
+    @Column(name = "news_content",columnDefinition = "BLOB",nullable=true)
+    public byte[] getNewsContent() {
         return newsContent;
     }
 
-    public void setNewsContent(String newsContent) {
+    public void setNewsContent(byte[] newsContent) {
         this.newsContent = newsContent;
     }
 

@@ -67,20 +67,15 @@ public class AuthController {
      */
     @PostMapping(value = "/register")
     @ApiOperation("用户注册")
-    public ResponseEntity register(@RequestBody User user) throws AuthenticationException {
-        try {
+    public ResponseEntity register(@RequestBody User user) throws AuthenticationException{
             if (StringUtils.isBlank(String.valueOf(user))){
                 return ResponseEntity.res(ResultEnum.FAILURE.getCode(),"user不能为空！",null);
             }
             String mess = userService.register(user);
             if(StringUtils.isBlank(mess) || mess.equals("用户已存在")){
-                return ResponseEntity.res(ResultEnum.FAILURE.getCode(),"注册失败！",mess);
+                return ResponseEntity.res(ResultEnum.FAILURE.getCode(),"用户已存在！",mess);
             }
             return ResponseEntity.res(ResultEnum.SUCCESS.getCode(),"用户注册成功！",mess);
-        }catch (Exception e){
-            logger.error(e.toString(),"注册异常");
-            return ResponseEntity.res(ResultEnum.FAILURE.getCode(),"注册异常！",null);
-        }
 
     }
 

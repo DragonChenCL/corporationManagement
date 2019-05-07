@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -56,7 +57,7 @@ public class AuthService{
         String rawPassword = user.getPassword();
         user.setPassword(encoder.encode(rawPassword));
         //默认设置权限
-        user.setAuthId(5);
+        user.setAuthId(3);
         userRepository.save(user);
         return "success";
     }

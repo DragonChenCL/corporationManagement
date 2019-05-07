@@ -15,7 +15,7 @@ import java.util.Objects;
 @DynamicInsert
 @Data
 public class User {
-    private Integer userId;
+    private int userId;
     private Integer authId;
     private String username;
     private String password;

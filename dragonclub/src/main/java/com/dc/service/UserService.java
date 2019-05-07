@@ -201,7 +201,7 @@ public class UserService {
 
     public PageDTO<UserInfoDTO> getMemberList(MemberListCondition condition) {
         //CurrentPage从0开始
-        Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize(), Sort.Direction.ASC, "userId");
+        Pageable pageable = PageRequest.of(condition.getCurrentPage() - 1, condition.getPageSize(), Sort.Direction.DESC, "userId");
 
         QUser user = QUser.user;
         QUserAssoc userAssoc = QUserAssoc.userAssoc;
