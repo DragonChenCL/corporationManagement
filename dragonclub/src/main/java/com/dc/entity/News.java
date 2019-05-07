@@ -9,7 +9,7 @@ public class News {
     private int newsId;
     private Integer associationId;
     private String newsTitle;
-    private byte[] newsContent;
+    private String newsContent;
     private String publishDate;
     private String newsImg;
     private String author;
@@ -54,14 +54,13 @@ public class News {
         this.newsTitle = newsTitle;
     }
 
-    @Lob
     @Basic
-    @Column(name = "news_content",columnDefinition = "BLOB",nullable=true)
-    public byte[] getNewsContent() {
+    @Column(name = "news_content")
+    public String getNewsContent() {
         return newsContent;
     }
 
-    public void setNewsContent(byte[] newsContent) {
+    public void setNewsContent(String newsContent) {
         this.newsContent = newsContent;
     }
 
