@@ -39,6 +39,17 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     int updateheadPortrait(String path ,int userId);
 
     /**
+     * 更新个人职务
+     * @param authId
+     * @param position
+     * @return
+     */
+    @Transactional
+    @Modifying
+    @Query(value = "update User set authId = ?1, position = ?2 where username = ?3")
+    int updateRoles(int authId ,String position ,String username);
+
+    /**
      * 获取成员列表
      * @param userSpecification
      * @param pageable

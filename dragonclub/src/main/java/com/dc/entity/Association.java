@@ -33,6 +33,7 @@ public class Association {
 
     @Id
     @Column(name = "association_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getAssociationId() {
         return associationId;
     }

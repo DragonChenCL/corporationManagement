@@ -58,6 +58,7 @@ public class AuthService{
         user.setPassword(encoder.encode(rawPassword));
         //默认设置权限
         user.setAuthId(3);
+        user.setPosition("社员");
         userRepository.save(user);
         return "success";
     }

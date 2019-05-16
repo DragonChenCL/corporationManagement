@@ -5,8 +5,12 @@ import com.dc.dto.AssociationSearchDTO;
 import com.dc.dto.PageDTO;
 import com.dc.entity.Association;
 import com.dc.entity.Category;
+import com.dc.entity.User;
+import com.dc.entity.UserAssoc;
 import com.dc.repository.AssociationRepository;
 import com.dc.repository.CategoryRepository;
+import com.dc.repository.UserAssocRepository;
+import com.dc.repository.UserRepository;
 import com.dc.utils.BeanUtils;
 import com.dc.utils.UpLoadUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -38,6 +42,12 @@ public class AssociationService {
     private AssociationRepository associationRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserAssocRepository userAssocRepository;
 
     @Value("${imgUrl.logo}")
     private String logoUrl;
@@ -152,7 +162,16 @@ public class AssociationService {
         BeanUtils.copyPropertiesExcludeNull(associationInfoDTO,association);
         association.setStatus("1");
         association.setLogo("/logo/默认图片.jpg");
-        Association save = associationRepository.save(association);
+        associationRepository.save(association);
+        //设置这个人的角色
+        userRepository.updateRoles(1,"社长",association.getResponsiblePerson());
+        User userByUsername = userRepository.findUserByUsername(association.getResponsiblePerson());
+        //设置人员与社团的关系
+        UserAssoc userAssoc = new UserAssoc();
+        userAssoc.setAssociationId(association.getAssociationId());
+        userAssoc.setUserId(userByUsername.getUserId());
+        userAssoc.setStatus("审核成功");
+        userAssocRepository.save(userAssoc);
     }
 
     /**
