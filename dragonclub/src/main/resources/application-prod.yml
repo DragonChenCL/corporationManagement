@@ -46,3 +46,4 @@ imgUrl:
   logo: "//var//lib//jenkins//workspace//corporationManage//dragonclub//target//classes//logo"
   headPortrait: "//var//lib//jenkins//workspace//corporationManage//dragonclub//target//classes//avatar"
   honor: "//var//lib//jenkins//workspace//corporationManage//dragonclub//target//classes//honor"
+  newsImg: "//var//lib//jenkins//workspace//corporationManage//dragonclub//target//classes//newsImg"
