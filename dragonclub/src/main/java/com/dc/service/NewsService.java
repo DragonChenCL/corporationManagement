@@ -89,7 +89,7 @@ public class NewsService {
         NewsDTO newsDTO = new NewsDTO();
         BeanUtils.copyPropertiesExcludeNull(news,newsDTO);
         //获取社团名称
-        Association association = associationRepository.findAssociationByAssociationId(id);
+        Association association = associationRepository.findAssociationByAssociationId(news.getAssociationId());
         if (association != null){
             newsDTO.setAssName(association.getAssName());
 
