@@ -35,7 +35,7 @@ public interface AssociationRepository extends JpaRepository<Association,Integer
 
     public List<Association> findAssociationsByStatus(String status);
 
-    public List<Association> findAssociationsByCategoryId(int categoryId);
+    public List<Association> findAssociationsByCategoryIdAndStatus(int categoryId ,String status);
 
 
 }

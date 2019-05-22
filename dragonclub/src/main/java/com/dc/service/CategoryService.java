@@ -40,7 +40,7 @@ public class CategoryService {
      * @param id
      */
     public int deleteCategory(int id) {
-        List<Association> list = associationRepository.findAssociationsByCategoryId(id);
+        List<Association> list = associationRepository.findAssociationsByCategoryIdAndStatus(id,"1");
         if (list != null && list.size() != 0) {
             return 0;
         }
@@ -54,7 +54,7 @@ public class CategoryService {
      * @param id
      */
     public int forbiddenCategory(int id) {
-        List<Association> list = associationRepository.findAssociationsByCategoryId(id);
+        List<Association> list = associationRepository.findAssociationsByCategoryIdAndStatus(id,"1");
         if (list != null && list.size() != 0) {
             return 0;
         }
@@ -88,7 +88,7 @@ public class CategoryService {
     public String editCategory(Category category) {
         //分类下有社团不能禁用
         if (category.getStatus().equals("0")) {
-            List<Association> list = associationRepository.findAssociationsByCategoryId(category.getCategoryId());
+            List<Association> list = associationRepository.findAssociationsByCategoryIdAndStatus(category.getCategoryId(),"1");
             if (list != null && list.size() != 0) {
                 return "分类下有社团不能禁用";
             }
